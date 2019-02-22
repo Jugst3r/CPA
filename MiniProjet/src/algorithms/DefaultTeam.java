@@ -172,6 +172,107 @@ public class DefaultTeam {
 
 	}
 	
+
+	
+	
+	
+	public ArrayList<Arete> kruskal_with_point_density_and_budget(ArrayList<Point> points2, ArrayList<Point> points3, int budget, double [][] M) {
+		
+
+		ArrayList<Arete> aretes = new ArrayList<Arete>();
+
+		ArrayList<PointIdent> points = new ArrayList<>();
+		for (Point pt : points2) {
+			points.add(new PointIdent(pt));
+		}
+
+		int cpt = 0;
+		for (int i = 0; i < points.size(); i++) {
+			for (int j = i + 1; j < points.size(); j++) {
+				cpt++;
+				int indX = points3.indexOf(points2.get(i));
+				int indY = points3.indexOf(points2.get(j));
+				Arete a = new Arete(points.get(i), points.get(j), M[indX][indY]);
+				aretes.add(a);
+			}
+		}
+		
+		//check point density; points2 is hitspoints
+		HashMap<Point, Double> point_density = new HashMap<>();
+		for(Point p1: points3) {
+			double dist_moyenne = 0;
+			for(Point p2: points3) {
+				dist_moyenne += p1.distance(p2);
+			}
+			point_density.put(p1, dist_moyenne/(points3.size()));
+		}
+		
+		System.out.println("cpt vaut " + cpt);
+		aretes.sort(Comparator.comparingDouble(Arete::poids));
+
+		ArrayList<Arete> sol = new ArrayList<Arete>();
+		int i = 0;
+		int budget_used = 0;
+		HashMap<PointIdent, Boolean> isInTree = new HashMap<>();
+		
+		Collections.shuffle(aretes);
+		Arete root_arete = aretes.get(0);
+		sol.add(root_arete);
+		isInTree.put(root_arete.getP(), true);
+		isInTree.put(root_arete.getQ(), true);
+		budget_used += root_arete.poids();
+		while (sol.size() < points.size() - 1) {
+			
+			Arete ar = null;
+			double val_of_interest = Double.POSITIVE_INFINITY;
+			for(Arete a:aretes) {
+				if(isInTree.containsKey(a.getP()) ^ isInTree.containsKey(a.getQ())) {
+					double tmp = Double.POSITIVE_INFINITY;
+					if(isInTree.containsKey(a.getP())) {
+						tmp = a.poids() / point_density.get(a.getP().getPoint());
+					}
+					if(isInTree.containsKey(a.getQ())) {
+						tmp = a.poids() / point_density.get(a.getQ().getPoint());
+					}
+					
+					if(val_of_interest > tmp ) {
+						ar = a;
+						val_of_interest = tmp;
+					}
+				}
+				
+			}
+			
+			System.out.println("l'arete vaut "+ ar);
+			
+			if(budget_used+ar.poids() > budget) {
+				break;
+			}
+			
+			budget_used += ar.poids();
+			
+			//Arete ar = aretes.get(i);
+			int id1 = ar.getP().clusterId;
+			int id2 = ar.getQ().clusterId;
+			isInTree.put(ar.p, true);
+			isInTree.put(ar.getQ(), true);
+			
+			if (id1 != id2) {
+				sol.add(ar);
+
+				for (PointIdent pt : points) {
+					if (pt.clusterId == id2) {
+						pt.clusterId = id1;
+					}
+				}
+			}
+
+		}
+
+		return sol;
+
+	}
+	
 	HashMap<Arete, Boolean> test = new HashMap<>();
 	int cpt = 0;
 	
@@ -354,7 +455,8 @@ public class DefaultTeam {
 		double dist[][] = (double[][]) result.get(0);
 		int paths[][] = (int[][]) result.get(1);
 		ArrayList<Arete> krusk = kruskal(hitPoints, points, dist);
-		krusk = kruskal_heur(krusk, budget);
+		//krusk = kruskal_heur(krusk, budget);
+		krusk = kruskal_with_point_density_and_budget(hitPoints, points, budget, dist);
 		ArrayList<Arete> kruskafter = new ArrayList<Arete>();
 		for(Arete a: krusk) {
 			kruskafter.addAll(replace(a, points, paths));
