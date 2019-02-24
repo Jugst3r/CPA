@@ -1,0 +1,1210 @@
+node = 0, degree = 73 
+node = 1, degree = 52 
+node = 2, degree = 161 
+node = 3, degree = 118 
+node = 4, degree = 163 
+node = 5, degree = 280 
+node = 6, degree = 202 
+node = 7, degree = 116 
+node = 8, degree = 62 
+node = 9, degree = 60 
+node = 10, degree = 75 
+node = 11, degree = 134 
+node = 12, degree = 96 
+node = 13, degree = 233 
+node = 14, degree = 128 
+node = 15, degree = 82 
+node = 16, degree = 115 
+node = 17, degree = 167 
+node = 18, degree = 88 
+node = 19, degree = 120 
+node = 20, degree = 118 
+node = 21, degree = 240 
+node = 22, degree = 27 
+node = 23, degree = 132 
+node = 24, degree = 63 
+node = 25, degree = 50 
+node = 26, degree = 53 
+node = 27, degree = 96 
+node = 28, degree = 174 
+node = 29, degree = 94 
+node = 30, degree = 112 
+node = 31, degree = 82 
+node = 32, degree = 55 
+node = 33, degree = 43 
+node = 34, degree = 49 
+node = 35, degree = 97 
+node = 36, degree = 63 
+node = 37, degree = 54 
+node = 38, degree = 70 
+node = 39, degree = 49 
+node = 40, degree = 101 
+node = 41, degree = 140 
+node = 42, degree = 117 
+node = 43, degree = 19 
+node = 44, degree = 175 
+node = 45, degree = 76 
+node = 46, degree = 117 
+node = 47, degree = 84 
+node = 48, degree = 97 
+node = 49, degree = 23 
+node = 50, degree = 27 
+node = 51, degree = 110 
+node = 52, degree = 42 
+node = 53, degree = 58 
+node = 54, degree = 90 
+node = 55, degree = 71 
+node = 56, degree = 80 
+node = 57, degree = 114 
+node = 58, degree = 218 
+node = 59, degree = 90 
+node = 60, degree = 91 
+node = 61, degree = 118 
+node = 62, degree = 369 
+node = 63, degree = 218 
+node = 64, degree = 249 
+node = 65, degree = 124 
+node = 66, degree = 46 
+node = 67, degree = 15 
+node = 68, degree = 79 
+node = 69, degree = 101 
+node = 70, degree = 28 
+node = 71, degree = 29 
+node = 72, degree = 12 
+node = 73, degree = 54 
+node = 74, degree = 158 
+node = 75, degree = 32 
+node = 76, degree = 37 
+node = 77, degree = 35 
+node = 78, degree = 23 
+node = 79, degree = 70 
+node = 80, degree = 119 
+node = 81, degree = 181 
+node = 82, degree = 348 
+node = 83, degree = 205 
+node = 84, degree = 178 
+node = 85, degree = 63 
+node = 86, degree = 356 
+node = 87, degree = 234 
+node = 88, degree = 50 
+node = 89, degree = 110 
+node = 90, degree = 46 
+node = 91, degree = 56 
+node = 92, degree = 77 
+node = 93, degree = 127 
+node = 94, degree = 71 
+node = 95, degree = 77 
+node = 96, degree = 204 
+node = 97, degree = 45 
+node = 98, degree = 40 
+node = 99, degree = 42 
+node = 100, degree = 74 
+node = 101, degree = 46 
+node = 102, degree = 37 
+node = 103, degree = 76 
+node = 104, degree = 48 
+node = 105, degree = 234 
+node = 106, degree = 230 
+node = 107, degree = 373 
+node = 108, degree = 74 
+node = 109, degree = 8 
+node = 110, degree = 15 
+node = 111, degree = 9 
+node = 112, degree = 25 
+node = 113, degree = 146 
+node = 114, degree = 236 
+node = 115, degree = 213 
+node = 116, degree = 137 
+node = 117, degree = 28 
+node = 118, degree = 53 
+node = 119, degree = 14 
+node = 120, degree = 28 
+node = 121, degree = 379 
+node = 122, degree = 43 
+node = 123, degree = 59 
+node = 124, degree = 68 
+node = 125, degree = 44 
+node = 126, degree = 53 
+node = 127, degree = 36 
+node = 128, degree = 242 
+node = 129, degree = 275 
+node = 130, degree = 37 
+node = 131, degree = 96 
+node = 132, degree = 110 
+node = 133, degree = 166 
+node = 134, degree = 42 
+node = 135, degree = 58 
+node = 136, degree = 44 
+node = 137, degree = 144 
+node = 138, degree = 59 
+node = 139, degree = 66 
+node = 140, degree = 64 
+node = 141, degree = 135 
+node = 142, degree = 219 
+node = 143, degree = 86 
+node = 144, degree = 21 
+node = 145, degree = 108 
+node = 146, degree = 41 
+node = 147, degree = 82 
+node = 148, degree = 31 
+node = 149, degree = 50 
+node = 150, degree = 55 
+node = 151, degree = 73 
+node = 152, degree = 108 
+node = 153, degree = 69 
+node = 154, degree = 74 
+node = 155, degree = 116 
+node = 156, degree = 37 
+node = 157, degree = 124 
+node = 158, degree = 83 
+node = 159, degree = 67 
+node = 160, degree = 546 
+node = 161, degree = 61 
+node = 162, degree = 93 
+node = 163, degree = 79 
+node = 164, degree = 80 
+node = 165, degree = 193 
+node = 166, degree = 252 
+node = 167, degree = 114 
+node = 168, degree = 124 
+node = 169, degree = 201 
+node = 170, degree = 169 
+node = 171, degree = 67 
+node = 172, degree = 144 
+node = 173, degree = 130 
+node = 174, degree = 124 
+node = 175, degree = 17 
+node = 176, degree = 56 
+node = 177, degree = 85 
+node = 178, degree = 58 
+node = 179, degree = 88 
+node = 180, degree = 138 
+node = 181, degree = 99 
+node = 182, degree = 72 
+node = 183, degree = 302 
+node = 184, degree = 133 
+node = 185, degree = 32 
+node = 186, degree = 40 
+node = 187, degree = 88 
+node = 188, degree = 60 
+node = 189, degree = 99 
+node = 190, degree = 55 
+node = 191, degree = 103 
+node = 192, degree = 37 
+node = 193, degree = 49 
+node = 194, degree = 76 
+node = 195, degree = 62 
+node = 196, degree = 51 
+node = 197, degree = 57 
+node = 198, degree = 54 
+node = 199, degree = 83 
+node = 200, degree = 56 
+node = 201, degree = 94 
+node = 202, degree = 7 
+node = 203, degree = 39 
+node = 204, degree = 48 
+node = 205, degree = 41 
+node = 206, degree = 99 
+node = 207, degree = 43 
+node = 208, degree = 61 
+node = 209, degree = 139 
+node = 210, degree = 141 
+node = 211, degree = 263 
+node = 212, degree = 209 
+node = 213, degree = 81 
+node = 214, degree = 86 
+node = 215, degree = 148 
+node = 216, degree = 50 
+node = 217, degree = 34 
+node = 218, degree = 97 
+node = 219, degree = 20 
+node = 220, degree = 24 
+node = 221, degree = 97 
+node = 222, degree = 103 
+node = 223, degree = 88 
+node = 224, degree = 19 
+node = 225, degree = 45 
+node = 226, degree = 93 
+node = 227, degree = 20 
+node = 228, degree = 23 
+node = 229, degree = 54 
+node = 230, degree = 36 
+node = 231, degree = 107 
+node = 232, degree = 156 
+node = 233, degree = 99 
+node = 234, degree = 77 
+node = 235, degree = 38 
+node = 236, degree = 83 
+node = 237, degree = 49 
+node = 238, degree = 75 
+node = 239, degree = 11 
+node = 240, degree = 37 
+node = 241, degree = 37 
+node = 242, degree = 51 
+node = 243, degree = 88 
+node = 244, degree = 47 
+node = 245, degree = 84 
+node = 246, degree = 27 
+node = 247, degree = 25 
+node = 248, degree = 36 
+node = 249, degree = 272 
+node = 250, degree = 54 
+node = 251, degree = 64 
+node = 252, degree = 195 
+node = 253, degree = 58 
+node = 254, degree = 112 
+node = 255, degree = 91 
+node = 256, degree = 170 
+node = 257, degree = 30 
+node = 258, degree = 83 
+node = 259, degree = 50 
+node = 260, degree = 37 
+node = 261, degree = 74 
+node = 262, degree = 45 
+node = 263, degree = 103 
+node = 264, degree = 62 
+node = 265, degree = 67 
+node = 266, degree = 52 
+node = 267, degree = 28 
+node = 268, degree = 59 
+node = 269, degree = 133 
+node = 270, degree = 19 
+node = 271, degree = 117 
+node = 272, degree = 79 
+node = 273, degree = 49 
+node = 274, degree = 31 
+node = 275, degree = 57 
+node = 276, degree = 11 
+node = 277, degree = 32 
+node = 278, degree = 80 
+node = 279, degree = 16 
+node = 280, degree = 199 
+node = 281, degree = 102 
+node = 282, degree = 223 
+node = 283, degree = 238 
+node = 284, degree = 75 
+node = 285, degree = 144 
+node = 286, degree = 76 
+node = 287, degree = 34 
+node = 288, degree = 60 
+node = 289, degree = 8 
+node = 290, degree = 133 
+node = 291, degree = 46 
+node = 292, degree = 58 
+node = 293, degree = 33 
+node = 294, degree = 40 
+node = 295, degree = 133 
+node = 296, degree = 91 
+node = 297, degree = 32 
+node = 298, degree = 23 
+node = 299, degree = 40 
+node = 300, degree = 110 
+node = 301, degree = 203 
+node = 302, degree = 41 
+node = 303, degree = 170 
+node = 304, degree = 50 
+node = 305, degree = 106 
+node = 306, degree = 72 
+node = 307, degree = 32 
+node = 308, degree = 59 
+node = 309, degree = 70 
+node = 310, degree = 47 
+node = 311, degree = 54 
+node = 312, degree = 41 
+node = 313, degree = 23 
+node = 314, degree = 79 
+node = 315, degree = 8 
+node = 316, degree = 62 
+node = 317, degree = 37 
+node = 318, degree = 96 
+node = 319, degree = 12 
+node = 320, degree = 82 
+node = 321, degree = 90 
+node = 322, degree = 44 
+node = 323, degree = 63 
+node = 324, degree = 25 
+node = 325, degree = 40 
+node = 326, degree = 60 
+node = 327, degree = 57 
+node = 328, degree = 31 
+node = 329, degree = 162 
+node = 330, degree = 15 
+node = 331, degree = 39 
+node = 332, degree = 41 
+node = 333, degree = 219 
+node = 334, degree = 33 
+node = 335, degree = 43 
+node = 336, degree = 54 
+node = 337, degree = 67 
+node = 338, degree = 100 
+node = 339, degree = 89 
+node = 340, degree = 164 
+node = 341, degree = 17 
+node = 342, degree = 110 
+node = 343, degree = 35 
+node = 344, degree = 30 
+node = 345, degree = 43 
+node = 346, degree = 48 
+node = 347, degree = 37 
+node = 348, degree = 6 
+node = 349, degree = 36 
+node = 350, degree = 38 
+node = 351, degree = 91 
+node = 352, degree = 40 
+node = 353, degree = 66 
+node = 354, degree = 18 
+node = 355, degree = 84 
+node = 356, degree = 77 
+node = 357, degree = 82 
+node = 358, degree = 88 
+node = 359, degree = 52 
+node = 360, degree = 45 
+node = 361, degree = 79 
+node = 362, degree = 111 
+node = 363, degree = 83 
+node = 364, degree = 11 
+node = 365, degree = 92 
+node = 366, degree = 165 
+node = 367, degree = 136 
+node = 368, degree = 79 
+node = 369, degree = 12 
+node = 370, degree = 48 
+node = 371, degree = 140 
+node = 372, degree = 45 
+node = 373, degree = 62 
+node = 374, degree = 27 
+node = 375, degree = 111 
+node = 376, degree = 80 
+node = 377, degree = 219 
+node = 378, degree = 33 
+node = 379, degree = 86 
+node = 380, degree = 65 
+node = 381, degree = 54 
+node = 382, degree = 5 
+node = 383, degree = 7 
+node = 384, degree = 16 
+node = 385, degree = 36 
+node = 386, degree = 8 
+node = 387, degree = 60 
+node = 388, degree = 41 
+node = 389, degree = 64 
+node = 390, degree = 73 
+node = 391, degree = 30 
+node = 392, degree = 28 
+node = 393, degree = 141 
+node = 394, degree = 59 
+node = 395, degree = 63 
+node = 396, degree = 15 
+node = 397, degree = 63 
+node = 398, degree = 4 
+node = 399, degree = 26 
+node = 400, degree = 60 
+node = 401, degree = 73 
+node = 402, degree = 10 
+node = 403, degree = 25 
+node = 404, degree = 138 
+node = 405, degree = 193 
+node = 406, degree = 43 
+node = 407, degree = 36 
+node = 408, degree = 90 
+node = 409, degree = 114 
+node = 410, degree = 17 
+node = 411, degree = 169 
+node = 412, degree = 124 
+node = 413, degree = 49 
+node = 414, degree = 14 
+node = 415, degree = 6 
+node = 416, degree = 4 
+node = 417, degree = 108 
+node = 418, degree = 49 
+node = 419, degree = 163 
+node = 420, degree = 215 
+node = 421, degree = 64 
+node = 422, degree = 69 
+node = 423, degree = 68 
+node = 424, degree = 203 
+node = 425, degree = 49 
+node = 426, degree = 98 
+node = 427, degree = 94 
+node = 428, degree = 46 
+node = 429, degree = 60 
+node = 430, degree = 85 
+node = 431, degree = 34 
+node = 432, degree = 8 
+node = 433, degree = 38 
+node = 434, degree = 308 
+node = 435, degree = 18 
+node = 436, degree = 3 
+node = 437, degree = 58 
+node = 438, degree = 155 
+node = 439, degree = 3 
+node = 440, degree = 127 
+node = 441, degree = 74 
+node = 442, degree = 32 
+node = 443, degree = 87 
+node = 444, degree = 51 
+node = 445, degree = 44 
+node = 446, degree = 41 
+node = 447, degree = 54 
+node = 448, degree = 69 
+node = 449, degree = 1 
+node = 450, degree = 121 
+node = 451, degree = 20 
+node = 452, degree = 67 
+node = 453, degree = 46 
+node = 454, degree = 14 
+node = 455, degree = 104 
+node = 456, degree = 5 
+node = 457, degree = 46 
+node = 458, degree = 80 
+node = 459, degree = 107 
+node = 460, degree = 80 
+node = 461, degree = 40 
+node = 462, degree = 44 
+node = 463, degree = 4 
+node = 464, degree = 78 
+node = 465, degree = 23 
+node = 466, degree = 80 
+node = 467, degree = 38 
+node = 468, degree = 21 
+node = 469, degree = 30 
+node = 470, degree = 40 
+node = 471, degree = 19 
+node = 472, degree = 7 
+node = 473, degree = 166 
+node = 474, degree = 126 
+node = 475, degree = 2 
+node = 476, degree = 9 
+node = 477, degree = 18 
+node = 478, degree = 62 
+node = 479, degree = 6 
+node = 480, degree = 68 
+node = 481, degree = 79 
+node = 482, degree = 75 
+node = 483, degree = 68 
+node = 484, degree = 36 
+node = 485, degree = 47 
+node = 486, degree = 103 
+node = 487, degree = 25 
+node = 488, degree = 17 
+node = 489, degree = 59 
+node = 490, degree = 58 
+node = 491, degree = 26 
+node = 492, degree = 47 
+node = 493, degree = 142 
+node = 494, degree = 175 
+node = 495, degree = 116 
+node = 496, degree = 38 
+node = 497, degree = 27 
+node = 498, degree = 145 
+node = 499, degree = 80 
+node = 500, degree = 31 
+node = 501, degree = 15 
+node = 502, degree = 36 
+node = 503, degree = 16 
+node = 504, degree = 69 
+node = 505, degree = 13 
+node = 506, degree = 102 
+node = 507, degree = 8 
+node = 508, degree = 49 
+node = 509, degree = 87 
+node = 510, degree = 32 
+node = 511, degree = 32 
+node = 512, degree = 9 
+node = 513, degree = 76 
+node = 514, degree = 14 
+node = 515, degree = 66 
+node = 516, degree = 26 
+node = 517, degree = 17 
+node = 518, degree = 106 
+node = 519, degree = 23 
+node = 520, degree = 96 
+node = 521, degree = 25 
+node = 522, degree = 6 
+node = 523, degree = 29 
+node = 524, degree = 1 
+node = 525, degree = 64 
+node = 526, degree = 95 
+node = 527, degree = 27 
+node = 528, degree = 20 
+node = 529, degree = 59 
+node = 530, degree = 15 
+node = 531, degree = 79 
+node = 532, degree = 21 
+node = 533, degree = 208 
+node = 534, degree = 5 
+node = 535, degree = 17 
+node = 536, degree = 22 
+node = 537, degree = 61 
+node = 538, degree = 19 
+node = 539, degree = 10 
+node = 540, degree = 14 
+node = 541, degree = 31 
+node = 542, degree = 32 
+node = 543, degree = 65 
+node = 544, degree = 44 
+node = 545, degree = 33 
+node = 546, degree = 149 
+node = 547, degree = 49 
+node = 548, degree = 49 
+node = 549, degree = 118 
+node = 550, degree = 39 
+node = 551, degree = 28 
+node = 552, degree = 62 
+node = 553, degree = 15 
+node = 554, degree = 20 
+node = 555, degree = 18 
+node = 556, degree = 15 
+node = 557, degree = 30 
+node = 558, degree = 14 
+node = 559, degree = 14 
+node = 560, degree = 79 
+node = 561, degree = 1 
+node = 562, degree = 53 
+node = 563, degree = 32 
+node = 564, degree = 36 
+node = 565, degree = 16 
+node = 566, degree = 30 
+node = 567, degree = 6 
+node = 568, degree = 46 
+node = 569, degree = 63 
+node = 570, degree = 32 
+node = 571, degree = 20 
+node = 572, degree = 37 
+node = 573, degree = 34 
+node = 574, degree = 4 
+node = 575, degree = 11 
+node = 576, degree = 19 
+node = 577, degree = 18 
+node = 578, degree = 1 
+node = 579, degree = 32 
+node = 580, degree = 2 
+node = 581, degree = 53 
+node = 582, degree = 27 
+node = 583, degree = 1 
+node = 584, degree = 4 
+node = 585, degree = 16 
+node = 586, degree = 25 
+node = 587, degree = 22 
+node = 588, degree = 36 
+node = 589, degree = 37 
+node = 590, degree = 43 
+node = 591, degree = 14 
+node = 592, degree = 60 
+node = 593, degree = 64 
+node = 594, degree = 6 
+node = 595, degree = 1 
+node = 596, degree = 9 
+node = 597, degree = 26 
+node = 598, degree = 15 
+node = 599, degree = 16 
+node = 600, degree = 15 
+node = 601, degree = 50 
+node = 602, degree = 37 
+node = 603, degree = 1 
+node = 604, degree = 8 
+node = 605, degree = 4 
+node = 606, degree = 1 
+node = 607, degree = 49 
+node = 608, degree = 46 
+node = 609, degree = 8 
+node = 610, degree = 24 
+node = 611, degree = 42 
+node = 612, degree = 74 
+node = 613, degree = 17 
+node = 614, degree = 6 
+node = 615, degree = 90 
+node = 616, degree = 10 
+node = 617, degree = 7 
+node = 618, degree = 17 
+node = 619, degree = 13 
+node = 620, degree = 5 
+node = 621, degree = 27 
+node = 622, degree = 1 
+node = 623, degree = 14 
+node = 624, degree = 12 
+node = 625, degree = 6 
+node = 626, degree = 1 
+node = 627, degree = 23 
+node = 628, degree = 8 
+node = 629, degree = 4 
+node = 630, degree = 4 
+node = 631, degree = 4 
+node = 632, degree = 6 
+node = 633, degree = 2 
+node = 634, degree = 3 
+node = 635, degree = 11 
+node = 636, degree = 3 
+node = 637, degree = 5 
+node = 638, degree = 29 
+node = 639, degree = 7 
+node = 640, degree = 26 
+node = 641, degree = 28 
+node = 642, degree = 28 
+node = 643, degree = 16 
+node = 644, degree = 25 
+node = 645, degree = 9 
+node = 646, degree = 5 
+node = 647, degree = 19 
+node = 648, degree = 2 
+node = 649, degree = 16 
+node = 650, degree = 2 
+node = 651, degree = 25 
+node = 652, degree = 11 
+node = 653, degree = 2 
+node = 654, degree = 43 
+node = 655, degree = 49 
+node = 656, degree = 11 
+node = 657, degree = 1 
+node = 658, degree = 2 
+node = 659, degree = 3 
+node = 660, degree = 2 
+node = 661, degree = 75 
+node = 662, degree = 30 
+node = 663, degree = 27 
+node = 664, degree = 13 
+node = 665, degree = 44 
+node = 666, degree = 35 
+node = 667, degree = 40 
+node = 668, degree = 1 
+node = 669, degree = 10 
+node = 670, degree = 2 
+node = 671, degree = 36 
+node = 672, degree = 17 
+node = 673, degree = 4 
+node = 674, degree = 28 
+node = 675, degree = 2 
+node = 676, degree = 4 
+node = 677, degree = 2 
+node = 678, degree = 20 
+node = 679, degree = 28 
+node = 680, degree = 1 
+node = 681, degree = 37 
+node = 682, degree = 3 
+node = 683, degree = 10 
+node = 684, degree = 2 
+node = 685, degree = 82 
+node = 686, degree = 15 
+node = 687, degree = 7 
+node = 688, degree = 1 
+node = 689, degree = 4 
+node = 690, degree = 32 
+node = 691, degree = 2 
+node = 692, degree = 3 
+node = 693, degree = 5 
+node = 694, degree = 11 
+node = 695, degree = 36 
+node = 696, degree = 11 
+node = 697, degree = 8 
+node = 698, degree = 50 
+node = 699, degree = 35 
+node = 700, degree = 43 
+node = 701, degree = 1 
+node = 702, degree = 2 
+node = 703, degree = 2 
+node = 704, degree = 3 
+node = 705, degree = 9 
+node = 706, degree = 14 
+node = 707, degree = 58 
+node = 708, degree = 29 
+node = 709, degree = 3 
+node = 710, degree = 31 
+node = 711, degree = 2 
+node = 712, degree = 4 
+node = 713, degree = 4 
+node = 714, degree = 31 
+node = 715, degree = 7 
+node = 716, degree = 4 
+node = 717, degree = 14 
+node = 718, degree = 6 
+node = 719, degree = 24 
+node = 720, degree = 39 
+node = 721, degree = 8 
+node = 722, degree = 4 
+node = 723, degree = 20 
+node = 724, degree = 2 
+node = 725, degree = 15 
+node = 726, degree = 25 
+node = 727, degree = 6 
+node = 728, degree = 20 
+node = 729, degree = 8 
+node = 730, degree = 22 
+node = 731, degree = 2 
+node = 732, degree = 2 
+node = 733, degree = 22 
+node = 734, degree = 15 
+node = 735, degree = 7 
+node = 736, degree = 8 
+node = 737, degree = 4 
+node = 738, degree = 58 
+node = 739, degree = 6 
+node = 740, degree = 4 
+node = 741, degree = 8 
+node = 742, degree = 6 
+node = 743, degree = 7 
+node = 744, degree = 2 
+node = 745, degree = 10 
+node = 746, degree = 2 
+node = 747, degree = 57 
+node = 748, degree = 47 
+node = 749, degree = 5 
+node = 750, degree = 1 
+node = 751, degree = 8 
+node = 752, degree = 5 
+node = 753, degree = 28 
+node = 754, degree = 41 
+node = 755, degree = 1 
+node = 756, degree = 41 
+node = 757, degree = 5 
+node = 758, degree = 16 
+node = 759, degree = 2 
+node = 760, degree = 7 
+node = 761, degree = 1 
+node = 762, degree = 1 
+node = 763, degree = 4 
+node = 764, degree = 9 
+node = 765, degree = 28 
+node = 766, degree = 6 
+node = 767, degree = 6 
+node = 768, degree = 23 
+node = 769, degree = 3 
+node = 770, degree = 1 
+node = 771, degree = 8 
+node = 772, degree = 2 
+node = 773, degree = 3 
+node = 774, degree = 1 
+node = 775, degree = 1 
+node = 776, degree = 44 
+node = 777, degree = 33 
+node = 778, degree = 7 
+node = 779, degree = 3 
+node = 780, degree = 1 
+node = 781, degree = 3 
+node = 782, degree = 3 
+node = 783, degree = 12 
+node = 784, degree = 3 
+node = 785, degree = 4 
+node = 786, degree = 12 
+node = 787, degree = 1 
+node = 788, degree = 3 
+node = 789, degree = 13 
+node = 790, degree = 1 
+node = 791, degree = 7 
+node = 792, degree = 1 
+node = 793, degree = 5 
+node = 794, degree = 2 
+node = 795, degree = 1 
+node = 796, degree = 4 
+node = 797, degree = 10 
+node = 798, degree = 2 
+node = 799, degree = 8 
+node = 800, degree = 8 
+node = 801, degree = 2 
+node = 802, degree = 7 
+node = 803, degree = 31 
+node = 804, degree = 12 
+node = 805, degree = 4 
+node = 806, degree = 11 
+node = 807, degree = 6 
+node = 808, degree = 2 
+node = 809, degree = 87 
+node = 810, degree = 19 
+node = 811, degree = 10 
+node = 812, degree = 99 
+node = 813, degree = 29 
+node = 814, degree = 8 
+node = 815, degree = 32 
+node = 816, degree = 28 
+node = 817, degree = 8 
+node = 818, degree = 19 
+node = 819, degree = 5 
+node = 820, degree = 216 
+node = 821, degree = 3 
+node = 822, degree = 32 
+node = 823, degree = 40 
+node = 824, degree = 2 
+node = 825, degree = 6 
+node = 826, degree = 42 
+node = 827, degree = 1 
+node = 828, degree = 41 
+node = 829, degree = 4 
+node = 830, degree = 1 
+node = 831, degree = 1 
+node = 832, degree = 45 
+node = 833, degree = 13 
+node = 834, degree = 1 
+node = 835, degree = 7 
+node = 836, degree = 7 
+node = 837, degree = 4 
+node = 838, degree = 2 
+node = 839, degree = 2 
+node = 840, degree = 27 
+node = 841, degree = 15 
+node = 842, degree = 2 
+node = 843, degree = 2 
+node = 844, degree = 3 
+node = 845, degree = 54 
+node = 846, degree = 3 
+node = 847, degree = 46 
+node = 848, degree = 3 
+node = 849, degree = 8 
+node = 850, degree = 2 
+node = 851, degree = 24 
+node = 852, degree = 7 
+node = 853, degree = 1 
+node = 854, degree = 7 
+node = 855, degree = 7 
+node = 856, degree = 109 
+node = 857, degree = 4 
+node = 858, degree = 1 
+node = 859, degree = 124 
+node = 860, degree = 39 
+node = 861, degree = 1 
+node = 862, degree = 1 
+node = 863, degree = 1 
+node = 864, degree = 1 
+node = 865, degree = 19 
+node = 866, degree = 4 
+node = 867, degree = 4 
+node = 868, degree = 2 
+node = 869, degree = 9 
+node = 870, degree = 3 
+node = 871, degree = 1 
+node = 872, degree = 22 
+node = 873, degree = 2 
+node = 874, degree = 3 
+node = 875, degree = 1 
+node = 876, degree = 1 
+node = 877, degree = 11 
+node = 878, degree = 6 
+node = 879, degree = 1 
+node = 880, degree = 48 
+node = 881, degree = 1 
+node = 882, degree = 2 
+node = 883, degree = 22 
+node = 884, degree = 3 
+node = 885, degree = 7 
+node = 886, degree = 12 
+node = 887, degree = 7 
+node = 888, degree = 1 
+node = 889, degree = 7 
+node = 890, degree = 3 
+node = 891, degree = 4 
+node = 892, degree = 31 
+node = 893, degree = 2 
+node = 894, degree = 1 
+node = 895, degree = 5 
+node = 896, degree = 49 
+node = 897, degree = 1 
+node = 898, degree = 5 
+node = 899, degree = 1 
+node = 900, degree = 38 
+node = 901, degree = 1 
+node = 902, degree = 2 
+node = 903, degree = 4 
+node = 904, degree = 1 
+node = 905, degree = 11 
+node = 906, degree = 7 
+node = 907, degree = 22 
+node = 908, degree = 43 
+node = 909, degree = 11 
+node = 910, degree = 1 
+node = 911, degree = 3 
+node = 912, degree = 6 
+node = 913, degree = 31 
+node = 914, degree = 35 
+node = 915, degree = 1 
+node = 916, degree = 1 
+node = 917, degree = 44 
+node = 918, degree = 42 
+node = 919, degree = 16 
+node = 920, degree = 2 
+node = 921, degree = 20 
+node = 922, degree = 36 
+node = 923, degree = 7 
+node = 924, degree = 16 
+node = 925, degree = 29 
+node = 926, degree = 24 
+node = 927, degree = 21 
+node = 928, degree = 1 
+node = 929, degree = 23 
+node = 930, degree = 27 
+node = 931, degree = 27 
+node = 932, degree = 141 
+node = 933, degree = 31 
+node = 934, degree = 4 
+node = 935, degree = 6 
+node = 936, degree = 31 
+node = 937, degree = 12 
+node = 938, degree = 2 
+node = 939, degree = 5 
+node = 940, degree = 2 
+node = 941, degree = 1 
+node = 942, degree = 2 
+node = 943, degree = 1 
+node = 944, degree = 1 
+node = 945, degree = 6 
+node = 946, degree = 1 
+node = 947, degree = 14 
+node = 948, degree = 1 
+node = 949, degree = 40 
+node = 950, degree = 54 
+node = 951, degree = 17 
+node = 952, degree = 14 
+node = 953, degree = 22 
+node = 954, degree = 10 
+node = 955, degree = 11 
+node = 956, degree = 20 
+node = 957, degree = 19 
+node = 958, degree = 6 
+node = 959, degree = 1 
+node = 960, degree = 1 
+node = 961, degree = 1 
+node = 962, degree = 3 
+node = 963, degree = 74 
+node = 964, degree = 5 
+node = 965, degree = 1 
+node = 966, degree = 2 
+node = 967, degree = 5 
+node = 968, degree = 4 
+node = 969, degree = 4 
+node = 970, degree = 7 
+node = 971, degree = 104 
+node = 972, degree = 2 
+node = 973, degree = 1 
+node = 974, degree = 13 
+node = 975, degree = 1 
+node = 976, degree = 35 
+node = 977, degree = 4 
+node = 978, degree = 6 
+node = 979, degree = 7 
+node = 980, degree = 16 
+node = 981, degree = 36 
+node = 982, degree = 1 
+node = 983, degree = 3 
+node = 984, degree = 3 
+node = 985, degree = 1 
+node = 986, degree = 3 
+node = 987, degree = 12 
+node = 988, degree = 2 
+node = 989, degree = 5 
+node = 990, degree = 22 
+node = 991, degree = 7 
+node = 992, degree = 3 
+node = 993, degree = 1 
+node = 994, degree = 1 
+node = 995, degree = 1 
+node = 996, degree = 2 
+node = 997, degree = 3 
+node = 998, degree = 1 
+node = 999, degree = 2 
+node = 1000, degree = 11 
+node = 1001, degree = 14 
+node = 1002, degree = 1 
+node = 1003, degree = 2 
+ OOO 38320448273 4
+52 3
+161 1
+118 4
+163 2
+280 1
+202 1
+116 3
+62 7
+60 8
+75 5
+134 1
+96 5
+233 1
+128 1
+82 6
+115 1
+167 1
+88 6
+120 1
+240 1
+27 12
+132 1
+63 7
+50 8
+53 5
+174 1
+94 3
+112 2
+55 3
+43 10
+49 14
+97 4
+54 11
+70 3
+101 2
+140 2
+117 3
+19 11
+175 2
+76 5
+84 3
+23 10
+110 5
+42 6
+58 9
+90 5
+71 2
+80 8
+114 3
+218 2
+91 4
+369 1
+249 1
+124 6
+46 10
+15 14
+79 9
+28 13
+29 6
+12 10
+158 1
+32 15
+37 14
+35 6
+119 1
+181 1
+348 1
+205 1
+178 1
+356 1
+234 2
+56 3
+77 4
+127 2
+204 1
+45 6
+40 11
+74 7
+48 5
+230 1
+373 1
+8 21
+9 8
+25 10
+146 1
+236 1
+213 1
+137 1
+14 14
+379 1
+59 7
+68 4
+44 9
+36 14
+242 1
+275 1
+166 2
+144 3
+66 3
+64 6
+135 1
+219 3
+86 3
+21 4
+108 3
+41 10
+31 12
+69 4
+83 5
+67 5
+546 1
+61 3
+93 2
+193 2
+252 1
+201 1
+169 2
+130 1
+17 10
+85 2
+138 2
+99 5
+72 2
+302 1
+133 4
+103 4
+51 3
+57 4
+7 26
+39 5
+139 1
+141 3
+263 1
+209 1
+81 1
+148 1
+34 4
+20 11
+24 5
+107 2
+156 1
+38 6
+11 15
+47 5
+272 1
+195 1
+170 2
+30 7
+16 12
+199 1
+102 2
+223 1
+238 1
+33 5
+203 2
+106 2
+162 1
+100 1
+89 1
+164 1
+6 23
+18 5
+111 2
+92 1
+165 1
+136 1
+65 2
+5 18
+4 33
+26 5
+10 9
+215 1
+98 1
+308 1
+3 31
+155 1
+87 3
+1 70
+121 1
+104 2
+78 1
+126 1
+2 48
+142 1
+145 1
+13 6
+95 1
+208 1
+22 9
+149 1
+22 9
+13 6
+13 6
+22 9
+22 9
+13 6
+216 1
+13 6
+109 1
+22 9
+22 9
+22 9
+22 9
+13 6
+22 9
