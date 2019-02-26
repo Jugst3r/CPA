@@ -13,8 +13,8 @@
 typedef struct Element Element;
 struct Element
 {
-    unsigned int nombre;
-    Element *suivant;
+  unsigned int nombre;
+  Element *suivant;
 };
 
 
@@ -24,7 +24,7 @@ typedef struct {
   unsigned * cd;
   unsigned * adj;
 }
-adjarray;
+  adjarray;
 
 
 Element *add(int voisin, Element *liste){
@@ -134,10 +134,8 @@ adjarray *adjacency_array(FILE *f, int *rename_tab, unsigned int nb_nodes, unsig
   unsigned int cpt = 0;
   unsigned int i;
   for(i=0; i < nb_nodes; i++){
-    printf("i vaut %d\n", i);
     Element *node = adj_list[i];
     while(node){
-        printf("%d a pdsqdqsdour voisin %d \n", i, node->nombre);
       adj[cpt] = node->nombre;
       node = node->suivant;
       cpt ++;
@@ -169,13 +167,13 @@ typedef struct ElementFifo *ElementFifo;
 typedef struct fifo* fifo;
 struct ElementFifo
 {
-    unsigned int nombre;
-    ElementFifo prec;
+  unsigned int nombre;
+  ElementFifo prec;
 };
 
 struct fifo{
-    ElementFifo first;
-    ElementFifo last;
+  ElementFifo first;
+  ElementFifo last;
 };
 
 
@@ -183,36 +181,35 @@ struct fifo{
 typedef Element **adjlist;
 
 fifo create_fifo(){
-    fifo F = (fifo)malloc(sizeof(struct fifo));
-    F->first = NULL;
-    F->last = NULL;
-    return F;
+  fifo F = (fifo)malloc(sizeof(struct fifo));
+  F->first = NULL;
+  F->last = NULL;
+  return F;
 }
 
 
 void add_to_fifo(fifo F, unsigned int s){
-    ElementFifo toAdd = (ElementFifo)malloc(sizeof(struct ElementFifo));
-    toAdd->nombre = s;
-    if(F->last == NULL){
-        F->last = toAdd;
-    }
-    else{
-        //at least 1 element then F->first is not null
-        F->first->prec = toAdd;
-    }
-    toAdd->prec = NULL;
-    F->first = toAdd;
+  ElementFifo toAdd = (ElementFifo)malloc(sizeof(struct ElementFifo));
+  toAdd->nombre = s;
+  if(F->last == NULL){
+    F->last = toAdd;
+  }
+  else{
+    //at least 1 element then F->first is not null
+    F->first->prec = toAdd;
+  }
+  toAdd->prec = NULL;
+  F->first = toAdd;
 }
 
 unsigned int pop(fifo F){
-    if(F->last == NULL){
-        printf("Popping on empty list\n");
-        exit(0);
-    }
-    unsigned int res = F->last->nombre;
-    F->last = F->last->prec;
-    printf("toAdd vaut %x\n", F->last);
-    return res;
+  if(F->last == NULL){
+    printf("Popping on empty list\n");
+    exit(0);
+  }
+  unsigned int res = F->last->nombre;
+  F->last = F->last->prec;
+  return res;
 }
 
 int is_empty(fifo f){
@@ -238,7 +235,6 @@ unsigned int bfs(adjlist G, unsigned int *s, unsigned int nb_nodes){
     u = pop(F);
 
     Element *voisins = G[u];
-    printf("%u\n", u);
     while(voisins){
       if(marquage[voisins->nombre] == 0){
         add_to_fifo(F, voisins->nombre);
@@ -254,74 +250,202 @@ unsigned int bfs(adjlist G, unsigned int *s, unsigned int nb_nodes){
 }
 
 unsigned int diametre(adjlist G, unsigned int nb_nodes){
-    unsigned int prv_diameter = 0;
-    unsigned int new_diameter = 0;
-    unsigned int res = 0;
-    int has_changed = 1;
+  unsigned int prv_diameter = 0;
+  unsigned int new_diameter = 0;
+  unsigned int res = 0;
+  int has_changed = 1;
     
+  while(1){
+    unsigned int start = rand() % nb_nodes;
     while(1){
-        unsigned int start = rand() % nb_nodes;
-        while(1){
-            //start is modified by bfs to fit new call
-            new_diameter = bfs(G, &start, nb_nodes);
-            if(new_diameter == prv_diameter) break;
-            prv_diameter = new_diameter;
-        }
-        if(res == new_diameter) break;
+      //start is modified by bfs to fit new call
+      new_diameter = bfs(G, &start, nb_nodes);
+      if(new_diameter == prv_diameter) break;
+      prv_diameter = new_diameter;
     }
-    return res;
+    if(res == new_diameter) break;
+  }
+  return res;
 }
 
 
 typedef struct NodDegree *NodDegree;
 struct NodDegree{
-  Element *nod;
+  unsigned int *voisins;
   unsigned int ident;
   unsigned int degree;
 };
 
 
+
 int comp (const void * elem1, const void * elem2) 
 {
-    NodDegree f = *((NodDegree *)elem1);
-    NodDegree s = *((NodDegree *)elem2);
-    //printf("f faut %d, s, vaut %d\n", f->degree, s->degree);
-    if (f->degree > s->degree) return  1;
-    if (f->degree < s->degree) return -1;
-    return 0;
+  NodDegree f = *((NodDegree *)elem1);
+  NodDegree s = *((NodDegree *)elem2);
+  if (f->degree > s->degree) return  1;
+  if (f->degree < s->degree) return -1;
+  return 0;
+}
+
+int compEntier (const void * elem1, const void * elem2) 
+{
+  unsigned int f = *((unsigned int *)elem1);
+  unsigned int s = *((unsigned int *)elem2);
+  //printf("f faut %d, s, vaut %d\n", f->degree, s->degree);
+  if (f > s) return  1;
+  if (f < s) return -1;
+  return 0;
+}
+
+
+//could be clearer, rename_tab is to translate input identifier to renamed ones
+//new_ident is to know in which position of the newly sorted nodes tab it is
+unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_tab, unsigned int *new_ident){
+  unsigned int nb_triangles = 0, i, j;
+  char line[SIZE_OF_LINE];
+  
+  fseek(f, 0, SEEK_SET);
+
+  while (fgets(line, SIZE_OF_LINE, f) != NULL) {
+    sscanf(line, "%u %u", & i, & j);
+    unsigned int save_i = i;
+    unsigned int save_j = j;
+
+    i = new_ident[rename_tab[i]];
+    j = new_ident[rename_tab[j]];
+    unsigned int *U = nodes[i]->voisins;
+    unsigned int *V = nodes[j]->voisins;
+    printf("examining edge %u %u, position in tab is %d %d\n", save_i, save_j,i, j);
+
+    //compute intersection
+    unsigned int W[MIN(nodes[i]->degree, nodes[j]->degree)];
+    unsigned int cpt_u = 0, cpt_v = 0;
+    unsigned int cpt_w = 0;
+    while (cpt_u < nodes[i]->degree && cpt_v < nodes[j]->degree){
+
+      unsigned int u = nodes[i]->voisins[cpt_u];
+      unsigned int v = nodes[j]->voisins[cpt_v];
+      printf("u vaut %u, u vaut %d\n", u, v);
+      if(u < v){
+        cpt_u++;
+      }
+      else{
+        if(u > v){
+          cpt_v++;
+        }
+        //in intersection
+        else{
+          //triangle detected
+          printf("triangle {%d, %d, %d}\n",save_i,save_j,v); 
+          cpt_u++;
+          cpt_v++;
+          nb_triangles++;
+        }
+
+      }
+    }
+
+  }
+  return nb_triangles;
+    
 }
 
 //efficiency can be gained using adjacency_array which is much more compact
-NodDegree *adjacency_list_sorted_by_degree(FILE *f, int *rename_tab, unsigned int nb_nodes){
+NodDegree *adjacency_list_sorted_by_degree(FILE *f, unsigned int *rename_tab, unsigned int nb_nodes){
 
-  NodDegree *nodes = (NodDegree*)malloc(sizeof(NodDegree));
+  NodDegree *nodes = (NodDegree*)malloc(sizeof(NodDegree)*nb_nodes);
+  unsigned int nb_neighbors_added[nb_nodes];
+  
   unsigned int i, j;
   char line[SIZE_OF_LINE];
   for(i=0; i < nb_nodes; i++){
     nodes[i] = (NodDegree)malloc(sizeof(struct NodDegree));
-    nodes[i]->nod = NULL;
     nodes[i]->degree=0;
     nodes[i]->ident = i;
+    nb_neighbors_added[i] = 0;
   }
-  
+
+
+  //must get nod degrees first
   fseek(f, 0, SEEK_SET);
 
   while (fgets(line, SIZE_OF_LINE, f) != NULL) {
     sscanf(line, "%u %u", & i, & j);
     i = rename_tab[i];
     j = rename_tab[j];
-    nodes[i]->nod = add(j, nodes[i]->nod);
     nodes[i]->degree++;
-    nodes[j]->nod = add(i, nodes[j]->nod);
     nodes[j]->degree++;
   }
 
-  qsort (nodes, sizeof(unsigned)*nb_nodes/sizeof(unsigned), sizeof(unsigned), comp);
+  //allocating nod neighbors
+  for(i=0; i < nb_nodes; i++){
+    nodes[i]->voisins = (unsigned int*)malloc(nodes[i]->degree*sizeof(unsigned int));
+  }
+  
+  fseek(f, 0, SEEK_SET);
+
+
+  while (fgets(line, SIZE_OF_LINE, f) != NULL) {
+
+    sscanf(line, "%u %u", & i, & j);
+    i = rename_tab[i];
+    j = rename_tab[j];
+
+    nodes[i]->voisins[nb_neighbors_added[i]] = j;
+    nodes[j]->voisins[nb_neighbors_added[j]] = i;
+
+    nb_neighbors_added[i]++;
+    nb_neighbors_added[j]++;
+  }
+
+
+
+  qsort (nodes, sizeof(NodDegree)*nb_nodes/sizeof(NodDegree), sizeof(NodDegree), comp);
+
+  unsigned int new_ident[nb_nodes];
+  for(i=0; i < nb_nodes; i++){
+    new_ident[nodes[i]->ident] = i;
+  }
+
+  //remove duplicates, build new truncated list and sort
+  for(i=0; i < nb_nodes; i++){
+  unsigned int compute_new_degree = 0;
+  for(j=0; j < nodes[i]->degree; j++){
+    if(new_ident[nodes[i]->voisins[j]] > i){
+      compute_new_degree++;
+    }
+  }
+  unsigned int *voisins = (unsigned int*)malloc(compute_new_degree*sizeof(unsigned int));
+  unsigned int cpt = 0;
+  for(j=0; j < nodes[i]->degree; j++){
+    if(new_ident[nodes[i]->voisins[j]] > i){
+      voisins[cpt++] = nodes[i]->voisins[j];
+    }
+  }
+  qsort(voisins, compute_new_degree*sizeof(unsigned int)/sizeof(unsigned int), sizeof(unsigned int), compEntier);
+  nodes[i]->degree = compute_new_degree;
+  nodes[i]->voisins = voisins;
+}
+    
+
   
     for(i=0; i < nb_nodes; i++){
-        printf("nodes[i] vaut %d\n", nodes[i]->ident);
+    printf("%d a pour voisins ", nodes[i]->ident);
+    for(j=0; j < nodes[i]->degree; j++){
+    printf("%d ", nodes[i]->voisins[j]);
     }
-  return NULL;
+    printf("\n");
+    }
+for(i=0; i < nb_nodes; i++){
+  printf("ident s'est fait renommer en %d\n", new_ident[i]);
+ }
+  
+
+  //Finished building data structure
+  unsigned int nb_triangles = computeTriangles(f,nodes,rename_tab,new_ident);
+printf("le nombre de triangles est %u\n", nb_triangles);
+
+  return nodes;
 }
 
 unsigned int nb_nodes;
@@ -379,7 +503,7 @@ void *menu(char * ENTREE) {
   Element **adjacency_list_res = adjacency_list(f_in, rename_tab, nb_nodes);
   adjarray *adjacency_array_res = adjacency_array(f_in, rename_tab, nb_nodes, nb_edges);
   //print_adjacency_list(adjacency_list_res, nb_nodes);
-  print_adjacency_array(adjacency_array_res, nb_nodes);
+  //print_adjacency_array(adjacency_array_res, nb_nodes);
   unsigned int start = 1;
   printf("la distance du graphe est %d\n", bfs(adjacency_list_res, &start, nb_nodes));
   adjacency_list_sorted_by_degree(f_in, rename_tab, nb_nodes);
