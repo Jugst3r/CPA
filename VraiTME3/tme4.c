@@ -437,7 +437,7 @@ NodDegree *adjacency_list_sorted_by_degree(FILE *f, unsigned int *rename_tab, un
     printf("\n");
     }
 for(i=0; i < nb_nodes; i++){
-  printf("ident s'est fait renommer en %d\n", new_ident[i]);
+  printf("%d s'est fait renommer en %d\n", i,new_ident[i]);
  }
   
 
