@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <pthread.h>
+
+#include <dirent.h>
+/* for ETIMEDOUT */
+#include <errno.h>
+#include <string.h>
 
 
 
@@ -83,10 +89,15 @@ int *adjacency_matrix(FILE *f_in, int *rename_tab, unsigned int nb_nodes){
   return adja_matrix;
 }
 
+void free_matrix(int *m){
+  free(m);
+}
 
 Element **adjacency_list(FILE *f, int *rename_tab, unsigned int nb_nodes){
 
+
   Element **nodes = (Element **)malloc(sizeof(Element*)*nb_nodes);
+  printf("hellfdsfdo\n");
   unsigned int i, j;
   char line[SIZE_OF_LINE];
   for(i=0; i < nb_nodes; i++){
@@ -118,9 +129,23 @@ void print_adjacency_list(Element **lst, int nb_nodes){
   }
 }
 
+void free_adjacency_list(Element **lst, int nb_nodes){
+  unsigned int i, j;
+  for(i=0; i < nb_nodes; i++){
+    Element *node = lst[i];
+    while(node){
+      Element *tmp = node->suivant;
+      free(node);
+      node = node->suivant;
+    }
+  }
+  free(lst);
+}
+
 
 //can be optimized
-adjarray *adjacency_array(FILE *f, int *rename_tab, unsigned int nb_nodes, unsigned int nb_edges, unsigned int *degrees){
+adjarray *adjacency_array(FILE *f, int *rename_tab, unsigned int nb_nodes, unsigned int nb_edges){
+
   adjarray *res = (adjarray *)malloc(sizeof(adjarray));
   unsigned int edges = 0;
   res->n = nb_nodes;
@@ -129,24 +154,37 @@ adjarray *adjacency_array(FILE *f, int *rename_tab, unsigned int nb_nodes, unsig
   unsigned int *where_to_add = (unsigned int*)malloc(sizeof(unsigned int)*nb_nodes);
   unsigned int *adj = (unsigned int*)malloc(sizeof(unsigned int)*nb_edges*2);
 
-
   char line[SIZE_OF_LINE];
   unsigned int i, j;
   for(i=0; i < nb_nodes; i++){
     where_to_add[i] = 0;
+    cd[i] = 0;
   }
 
   fseek(f, 0, SEEK_SET);
   while (fgets(line, SIZE_OF_LINE, f) != NULL) {
     sscanf(line, "%u %u", & i, & j);
-    printf("arete examinee %u %u\n", i, j);
+    //    printf("arete examinee %u %u\n", i, j);
+    i = rename_tab[i];
+    j = rename_tab[j];
+    cd[i]++;
+    cd[j]++;
+  }
+
+  cd[0] = 0;
+  unsigned int tmp = cd[0];
+  for(i=1; i < nb_nodes; i++){
+    tmp = cd[i];
+    cd[i] = tmp + cd[i-1];
+    
+  }
+  fseek(f, 0, SEEK_SET);
+  while (fgets(line, SIZE_OF_LINE, f) != NULL) {
+    sscanf(line, "%u %u", & i, & j);
     unsigned int save_i = i;
     unsigned int save_j = j;
     i = rename_tab[i];
     j = rename_tab[j];
-    cd[i] = degrees[save_i];
-    cd[j] = degrees[save_j];
-    printf("ajout en position pour %d %d\n", cd[i]+(where_to_add[i]++), cd[j]+(where_to_add[j]++));
     adj[cd[i]+(where_to_add[i]++)] = j;
     adj[cd[j]+(where_to_add[j]++)] = i;
 
@@ -154,10 +192,15 @@ adjarray *adjacency_array(FILE *f, int *rename_tab, unsigned int nb_nodes, unsig
 
   res->cd = cd;
   res->adj = adj;
- 
+  free(where_to_add);
   return res;
 }
 
+void free_adj_array(adjarray *arr){
+  free(arr->cd);
+  free(arr->adj);
+  free(arr);
+}
 
 
 void print_adjacency_array(adjarray *a, int nb_nodes){
@@ -217,6 +260,7 @@ unsigned int pop(fifo F){
     exit(0);
   }
   unsigned int res = F->last->nombre;
+  free(F->last);
   F->last = F->last->prec;
   return res;
 }
@@ -254,6 +298,7 @@ unsigned int bfs(adjlist G, unsigned int *s, unsigned int nb_nodes){
     }
   }
   *s=u;
+  free(F);
   return distances[u];
   
 }
@@ -366,8 +411,7 @@ unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_ta
     
 }
 
-//efficiency can be gained using adjacency_array which is much more compact
-NodDegree *adjacency_list_sorted_by_degree(FILE *f, unsigned int *rename_tab, unsigned int nb_nodes){
+NodDegree *compute_triangles_aux(FILE *f, unsigned int *rename_tab, unsigned int nb_nodes){
 
   NodDegree *nodes = (NodDegree*)malloc(sizeof(NodDegree)*nb_nodes);
   unsigned int nb_neighbors_added[nb_nodes];
@@ -425,112 +469,304 @@ NodDegree *adjacency_list_sorted_by_degree(FILE *f, unsigned int *rename_tab, un
 
   //remove duplicates, build new truncated list and sort
   for(i=0; i < nb_nodes; i++){
-  unsigned int compute_new_degree = 0;
-  for(j=0; j < nodes[i]->degree; j++){
-    if(new_ident[nodes[i]->voisins[j]] > i){
-      compute_new_degree++;
+    unsigned int compute_new_degree = 0;
+    for(j=0; j < nodes[i]->degree; j++){
+      if(new_ident[nodes[i]->voisins[j]] > i){
+        compute_new_degree++;
+      }
     }
-  }
-  unsigned int *voisins = (unsigned int*)malloc(compute_new_degree*sizeof(unsigned int));
-  unsigned int cpt = 0;
-  for(j=0; j < nodes[i]->degree; j++){
-    if(new_ident[nodes[i]->voisins[j]] > i){
-      voisins[cpt++] = nodes[i]->voisins[j];
+    unsigned int *voisins = (unsigned int*)malloc(compute_new_degree*sizeof(unsigned int));
+    unsigned int cpt = 0;
+    for(j=0; j < nodes[i]->degree; j++){
+      if(new_ident[nodes[i]->voisins[j]] > i){
+        voisins[cpt++] = nodes[i]->voisins[j];
+      }
     }
+    qsort(voisins, compute_new_degree*sizeof(unsigned int)/sizeof(unsigned int), sizeof(unsigned int), compEntier);
+    nodes[i]->degree = compute_new_degree;
+    nodes[i]->voisins = voisins;
   }
-  qsort(voisins, compute_new_degree*sizeof(unsigned int)/sizeof(unsigned int), sizeof(unsigned int), compEntier);
-  nodes[i]->degree = compute_new_degree;
-  nodes[i]->voisins = voisins;
-}
     
 
   
-    for(i=0; i < nb_nodes; i++){
+  for(i=0; i < nb_nodes; i++){
     printf("%d a pour voisins ", nodes[i]->ident);
     for(j=0; j < nodes[i]->degree; j++){
-    printf("%d ", nodes[i]->voisins[j]);
+      printf("%d ", nodes[i]->voisins[j]);
     }
     printf("\n");
-    }
-for(i=0; i < nb_nodes; i++){
-  printf("%d s'est fait renommer en %d\n", i,new_ident[i]);
- }
+  }
+  for(i=0; i < nb_nodes; i++){
+    printf("%d s'est fait renommer en %d\n", i,new_ident[i]);
+  }
   
 
   //Finished building data structure
   unsigned int nb_triangles = computeTriangles(f,nodes,rename_tab,new_ident);
-printf("le nombre de triangles est %u\n", nb_triangles);
+  printf("le nombre de triangles est %u\n", nb_triangles);
 
   return nodes;
 }
 
-unsigned int nb_nodes;
-unsigned int nb_edges;
-void *menu(char * ENTREE) {
+int op;
+char *dir_name;
 
-  FILE * f_in;
-  char line[SIZE_OF_LINE];
-  
-  if ((f_in = fopen(ENTREE, "r")) == NULL) {
-    fprintf(stderr, "\nErreur: Impossible de lire le fichier %s\n", ENTREE);
-  }
-  unsigned int i = 0, j=0;
-  unsigned int max = 0;
 
-  /**Get node number to allocate the adjacency matrix**/
-  while (fgets(line, SIZE_OF_LINE, f_in) != NULL) {
-    sscanf(line, "%u %u", & i, & j);
-    unsigned int m = MAX(i, j);
+pthread_mutex_t calculating = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t done = PTHREAD_COND_INITIALIZER;
+
+void *menu(char * ENTREE, int op);
+
+//put all parameters global to use them in testing functions without having to completely change functions signature
+
+FILE *output_file;
+FILE *output_file_2;
+DIR *d;
+struct dirent *dir;
+
+FILE *f_in;
+
+clock_t start;
+clock_t end;
+double elapsed_time;
+//not a good style of programming ..
+/* void *test_bfs(void *data) */
+/* { */
+/*   int oldtype; */
+
+/*   /\* allow the thread to be killed at any time *\/ */
+/*   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype); */
+
+/*   /\* ... calculations and expensive io here, for example: */
+/*    * infinitely loop */
+/*    *\/ */
+/*   start = clock(); */
+/*   printf("Computing adj_list time\n"); */
+/*   lst = adjacency_list(f_in, rename_tab, nb_nodes); */
+/*   end = clock(); */
+/*   elapsed_time = (end-start)/(double)CLOCKS_PER_SEC; */
+/*   printf("%s took %f time processing adjacency list\n", dir->d_name, elapsed_time); */
+/*   fprintf(output_file,"%d %f\n", nb_nodes, elapsed_time); */
+/*   start = clock(); */
+/*   printf("Computing bfs time\n"); */
+/*   first_nod = 0; */
+/*   bfs(lst, &first_nod, nb_nodes); */
+/*   end = clock(); */
+
+/*   elapsed_time = (end-start)/(double)CLOCKS_PER_SEC; */
+/*   printf("%s took %f time processing bfs\n", dir->d_name, elapsed_time); */
+/*   fprintf(output_file,"%d %f\n", nb_nodes, elapsed_time); */
+/*   free_adjacency_list(lst, nb_nodes); */
+
+/*   /\* wake up the caller if we've completed in time *\/ */
+/*   pthread_cond_signal(&done); */
+/*   return NULL; */
+/* } */
+
+
+/* int do_or_timeout(struct timespec *max_wait) */
+/* { */
+/*   struct timespec abs_time; */
+/*         pthread_t tid; */
+/*         int err; */
+
+/*         pthread_mutex_lock(&calculating); */
+/*         printf("creating thread %d\n", abs_time.tv_sec); */
+/*         /\* pthread cond_timedwait expects an absolute time to wait until *\/ */
+/*         clock_gettime(CLOCK_REALTIME, &abs_time); */
+/*         abs_time.tv_sec += max_wait->tv_sec; */
+/*         abs_time.tv_nsec += max_wait->tv_nsec; */
+
+/*         pthread_create(&tid, NULL, test_bfs, NULL); */
+
+/*         /\* pthread_cond_timedwait can return spuriously: this should */
+/*          * be in a loop for production code */
+/*          *\/ */
+/*         err = pthread_cond_timedwait(&done, &calculating, &abs_time); */
+/*         printf("i am waking up\n"); */
+/*         if (err == ETIMEDOUT) */
+/*                 fprintf(stderr, "%s: calculation timed out\n", __func__); */
+
+
+/*         pthread_mutex_unlock(&calculating); */
+
+/*         return err; */
+/* } */
+
+
+void do_op(char *d_path, int op){
+     char line[SIZE_OF_LINE];
+
+     unsigned int *rename_tab;
+     unsigned int nb_nodes;
+     unsigned int nb_edges;
+
+printf("hello\n");
+      if ((f_in = fopen(d_path, "r")) == NULL) {
+        fprintf(stderr, "\nErreur: Impossible de lire le fichier %s\n", dir->d_name);
+        return;
+      }
+      unsigned int i = 0, j=0;
+      unsigned int max = 0;
+
+      nb_nodes = 0;
+      nb_edges = 0;
+      start = clock();
+      /**Get node number to allocate the adjacency matrix**/
+      while (fgets(line, SIZE_OF_LINE, f_in) != NULL) {
+        sscanf(line, "%u %u", & i, & j);
+
+
+        unsigned int m = MAX(i, j);
     
-    if (m > max) {
-      max = m;
+        if (m > max) {
+          max = m;
+        }
+        nb_edges++;
+      }
+
+      printf("nb nodes calculated..\n");
+      
+      rename_tab = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
+      printf("now renaming..\n");
+
+      i=0;
+      for(i = 0; i < max+1; i++){
+        rename_tab[i] = 0;
+      }
+
+      fseek(f_in, 0, SEEK_SET);
+      while (fgets(line, SIZE_OF_LINE, f_in) != NULL) {
+        sscanf(line, "%u %u", & i, & j);
+        rename_tab[i] = 1;
+        rename_tab[j] = 1;
+      }
+
+      /*cpt is at the end the number of nodes*/
+      unsigned int cpt = 0;
+
+      for(i = 0; i < max+1; i++){
+        if(rename_tab[i] == 1){
+          rename_tab[i] = cpt++;
+        }
+      }
+      nb_nodes = cpt;
+
+
+      struct timespec max_wait;
+
+      memset(&max_wait, 0, sizeof(max_wait));
+      
+      /* wait at most 100 seconds */
+      max_wait.tv_sec = 10;
+
+      printf("Beginning operation\n");
+
+      Element **lst;
+      adjarray *arr;
+      unsigned int first_nod;;
+      int *m;
+      switch(op){
+        //testing adjacency matrix
+      case 0:
+        m = adjacency_matrix(f_in, rename_tab, nb_nodes);
+
+        end = clock();
+        free_matrix(m);
+        break;
+        //adjacency list
+      case 1:
+        lst = adjacency_list(f_in, rename_tab, nb_nodes);        
+        end = clock();
+        free_adjacency_list(lst, nb_nodes);
+        break;
+        //adjacency array
+      case 2:
+        arr = adjacency_array(f_in, rename_tab, nb_nodes, nb_edges);
+        free_adj_array(arr);
+        end = clock();
+        break;
+        //bfs
+      case 3:
+//        do_or_timeout(&max_wait);
+
+        lst = adjacency_list(f_in, rename_tab, nb_nodes);
+        printf("hello\n");
+        end = clock();
+        elapsed_time = (end-start)/(double)CLOCKS_PER_SEC;
+        printf("%s took %f time processing adjacency list\n", dir->d_name, elapsed_time);
+        start = clock();
+        first_nod = 1;
+        bfs(lst, &first_nod, nb_nodes);
+        end = clock();
+        //free_adjacency_list(lst, nb_nodes);
+  
+        break;
+      default:
+        break;
+      }
+
+
+
+
+      //double elapsed_time = (end-start)/(double)CLOCKS_PER_SEC;
+      printf("File %s took %f time processing the operation\n", dir->d_name, elapsed_time);
+
+      //fprintf(output_file, "%d %f\n", nb_edges, elapsed_time);
+      //      adjacency_list_sorted_by_degree(f_in, rename_tab, nb_nodes);
+      free(rename_tab);
+      fclose(f_in);
+}
+
+
+void *menu(char * ENTREE, int op) {
+
+
+  printf("hello %s\n", ENTREE);
+  d = opendir(ENTREE);
+  
+
+  char output_file_name[255];
+  char output_file_name2[255];
+  switch(op){
+  case 0:
+    sprintf(output_file_name, "%s", "res_adj_matrix.txt");
+    break;
+  case 1:
+    sprintf(output_file_name, "%s", "res_adj_list.txt");
+    break;
+  case 2:
+    sprintf(output_file_name, "%s", "res_adj_arr.txt");
+    break;
+  case 3:
+    //hackish and very ugly
+    output_file_2 = fopen("res_adj_arr.txt", "w"); 
+    sprintf(output_file_name, "%s", "res_bfs.txt");
+    break;
+    
+  }
+
+  output_file = fopen(output_file_name, "w");
+  
+  if(d){
+    printf("Entering %s directory\n", ENTREE);
+    while((dir = readdir(d)) != NULL){
+      if(dir->d_type != DT_REG) 
+        continue;
+      printf("Reading file %s\n", dir->d_name);
+      char d_path[255]; 
+      sprintf(d_path, "%s/%s", ENTREE, dir->d_name);
+      do_op(d_path, op);
+    closedir(d);
     }
-    nb_edges++;
   }
-
- 
-  unsigned int *rename_tab = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
-  unsigned int *degrees = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
-  i=0;
-  for(i = 0; i < max+1; i++){
-    rename_tab[i] = 0;
-    degrees[i] = 0;
+  else{
+    printf("Couldnot open directory\n");
   }
+  fclose(output_file);
+  fclose(output_file_2);
 
-  fseek(f_in, 0, SEEK_SET);
-  while (fgets(line, SIZE_OF_LINE, f_in) != NULL) {
-    sscanf(line, "%u %u", & i, & j);
-    rename_tab[i] = 1;
-    rename_tab[j] = 1;
-    degrees[i]++;
-    degrees[j]++;
-  }
-  /*cpt is at the end the number of nodes*/
-  unsigned int cpt = 0;
-
-  for(i = 0; i < max+1; i++){
-    if(rename_tab[i] == 1){
-      rename_tab[i] = cpt++;
-    }
-  }
-  nb_nodes = cpt;
-
-
-
-
-
-  //int *adjacency_matrix_res = adjacency_matrix(f_in, rename_tab, nb_nodes);
-  Element **adjacency_list_res = adjacency_list(f_in, rename_tab, nb_nodes);
-  adjarray *adjacency_array_res = adjacency_array(f_in, rename_tab, nb_nodes, nb_edges, degrees);
-  //print_adjacency_list(adjacency_list_res, nb_nodes);
-  printf("printing adj array\n");
-  print_adjacency_array(adjacency_array_res, nb_nodes);
-  unsigned int start = 1;
-  printf("la distance du graphe est %d\n", bfs(adjacency_list_res, &start, nb_nodes));
-  adjacency_list_sorted_by_degree(f_in, rename_tab, nb_nodes);
-  free(rename_tab);
-  fclose(f_in);
-  return adjacency_array_res;
+  return NULL;
 
 }
 
@@ -539,11 +775,17 @@ void *menu(char * ENTREE) {
 
 
 int main(int argc, char *argv[]) {
-
-  int *m = menu(argv[1]);
+  printf("hello\n");
+  op = atoi(argv[2]);
+  dir_name = argv[1];
   srand(time(NULL));
   //print_matrix(m, nb_nodes);
-  
+
+  /* wait at most 2 seconds */
+//  max_wait.tv_sec = 10000;
+//  do_or_timeout(&max_wait, argv[1], op);
+  do_op(argv[1], op);
+  //fclose(output_file);
   //printf("%d", special_quantity("email-Eu-core.txt", 1005));
   //degree("email-Eu-core.txt",1005);
   //sscanf("23 24","%d %d",&a,&b);
