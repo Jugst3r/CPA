@@ -120,27 +120,36 @@ void print_adjacency_list(Element **lst, int nb_nodes){
 
 
 //can be optimized
-adjarray *adjacency_array(FILE *f, int *rename_tab, unsigned int nb_nodes, unsigned int nb_edges){
+adjarray *adjacency_array(FILE *f, int *rename_tab, unsigned int nb_nodes, unsigned int nb_edges, unsigned int *degrees){
   adjarray *res = (adjarray *)malloc(sizeof(adjarray));
   unsigned int edges = 0;
   res->n = nb_nodes;
   res->m = nb_edges;
-  Element **adj_list = adjacency_list(f, rename_tab, nb_nodes);
   unsigned int *cd = (unsigned int*)malloc(sizeof(unsigned int)*nb_nodes);
+  unsigned int *where_to_add = (unsigned int*)malloc(sizeof(unsigned int)*nb_nodes);
   unsigned int *adj = (unsigned int*)malloc(sizeof(unsigned int)*nb_edges*2);
 
-  print_adjacency_list(adj_list, nb_nodes);
 
-  unsigned int cpt = 0;
-  unsigned int i;
+  char line[SIZE_OF_LINE];
+  unsigned int i, j;
   for(i=0; i < nb_nodes; i++){
-    Element *node = adj_list[i];
-    while(node){
-      adj[cpt] = node->nombre;
-      node = node->suivant;
-      cpt ++;
-    }
-    cd[i] = cpt;
+    where_to_add[i] = 0;
+  }
+
+  fseek(f, 0, SEEK_SET);
+  while (fgets(line, SIZE_OF_LINE, f) != NULL) {
+    sscanf(line, "%u %u", & i, & j);
+    printf("arete examinee %u %u\n", i, j);
+    unsigned int save_i = i;
+    unsigned int save_j = j;
+    i = rename_tab[i];
+    j = rename_tab[j];
+    cd[i] = degrees[save_i];
+    cd[j] = degrees[save_j];
+    printf("ajout en position pour %d %d\n", cd[i]+(where_to_add[i]++), cd[j]+(where_to_add[j]++));
+    adj[cd[i]+(where_to_add[i]++)] = j;
+    adj[cd[j]+(where_to_add[j]++)] = i;
+
   }
 
   res->cd = cd;
@@ -255,14 +264,18 @@ unsigned int diametre(adjlist G, unsigned int nb_nodes){
   unsigned int res = 0;
   int has_changed = 1;
     
-  while(1){
+  unsigned int bound = 10, i=0, j=0;
+  
+  while(i++<10){
     unsigned int start = rand() % nb_nodes;
-    while(1){
+    j=0;
+    while(j++<10){
       //start is modified by bfs to fit new call
       new_diameter = bfs(G, &start, nb_nodes);
       if(new_diameter == prv_diameter) break;
       prv_diameter = new_diameter;
     }
+    //result can be inferior
     if(res == new_diameter) break;
   }
   return res;
@@ -302,6 +315,7 @@ int compEntier (const void * elem1, const void * elem2)
 //new_ident is to know in which position of the newly sorted nodes tab it is
 unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_tab, unsigned int *new_ident){
   unsigned int nb_triangles = 0, i, j;
+  unsigned int trips_connected = 0;
   char line[SIZE_OF_LINE];
   
   fseek(f, 0, SEEK_SET);
@@ -315,12 +329,13 @@ unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_ta
     j = new_ident[rename_tab[j]];
     unsigned int *U = nodes[i]->voisins;
     unsigned int *V = nodes[j]->voisins;
-    printf("examining edge %u %u, position in tab is %d %d\n", save_i, save_j,i, j);
+    printf("examining edge %u %u, position in tab is %d %d\n", rename_tab[save_i], rename_tab[save_j],save_i, save_j);
 
     //compute intersection
     unsigned int W[MIN(nodes[i]->degree, nodes[j]->degree)];
     unsigned int cpt_u = 0, cpt_v = 0;
     unsigned int cpt_w = 0;
+    trips_connected += nodes[i]->degree +nodes[j]->degree;
     while (cpt_u < nodes[i]->degree && cpt_v < nodes[j]->degree){
 
       unsigned int u = nodes[i]->voisins[cpt_u];
@@ -336,7 +351,7 @@ unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_ta
         //in intersection
         else{
           //triangle detected
-          printf("triangle {%d, %d, %d}\n",save_i,save_j,v); 
+          printf("triangle {%u, %u, %u}\n",rename_tab[save_i],rename_tab[save_j],v); 
           cpt_u++;
           cpt_v++;
           nb_triangles++;
@@ -346,6 +361,7 @@ unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_ta
     }
 
   }
+  printf("clustering coefficient is %f\n", nb_triangles*3.0/trips_connected);
   return nb_triangles;
     
 }
@@ -474,9 +490,11 @@ void *menu(char * ENTREE) {
 
  
   unsigned int *rename_tab = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
+  unsigned int *degrees = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
   i=0;
   for(i = 0; i < max+1; i++){
     rename_tab[i] = 0;
+    degrees[i] = 0;
   }
 
   fseek(f_in, 0, SEEK_SET);
@@ -484,6 +502,8 @@ void *menu(char * ENTREE) {
     sscanf(line, "%u %u", & i, & j);
     rename_tab[i] = 1;
     rename_tab[j] = 1;
+    degrees[i]++;
+    degrees[j]++;
   }
   /*cpt is at the end the number of nodes*/
   unsigned int cpt = 0;
@@ -501,9 +521,10 @@ void *menu(char * ENTREE) {
 
   //int *adjacency_matrix_res = adjacency_matrix(f_in, rename_tab, nb_nodes);
   Element **adjacency_list_res = adjacency_list(f_in, rename_tab, nb_nodes);
-  adjarray *adjacency_array_res = adjacency_array(f_in, rename_tab, nb_nodes, nb_edges);
+  adjarray *adjacency_array_res = adjacency_array(f_in, rename_tab, nb_nodes, nb_edges, degrees);
   //print_adjacency_list(adjacency_list_res, nb_nodes);
-  //print_adjacency_array(adjacency_array_res, nb_nodes);
+  printf("printing adj array\n");
+  print_adjacency_array(adjacency_array_res, nb_nodes);
   unsigned int start = 1;
   printf("la distance du graphe est %d\n", bfs(adjacency_list_res, &start, nb_nodes));
   adjacency_list_sorted_by_degree(f_in, rename_tab, nb_nodes);
