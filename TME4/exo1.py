@@ -9,6 +9,20 @@ Created on Fri Mar  1 09:16:16 2019
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import random, shuffle, seed
+from collections import defaultdict
+
+import colorsys
+
+def get_N_HexCol(N=5):
+
+    HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in xrange(0,N*100,100)]
+    hex_out = []
+    for rgb in HSV_tuples:
+        rgb = map(lambda x: int(x*255),colorsys.hsv_to_rgb(*rgb))
+        hex_out.append("#" + str("".join(map(lambda x: chr(x).encode('hex'),rgb))))
+    return hex_out
+
+print(get_N_HexCol())
 
 def generate_random_graph (f, nb_cluster, cluster_size, p, q):
     nods = range (nb_cluster*cluster_size)
@@ -28,8 +42,18 @@ def generate_random_graph (f, nb_cluster, cluster_size, p, q):
     return edges
             
 
-def draw_graph(graph, labels=None, graph_layout='spectral',
-               node_size=0.1, node_color='blue', node_alpha=0.1,
+def parse_label(f):
+    d = defaultdict(list)
+    for line in f:
+        (nod, label) = map(int, line.split())
+        d[label].append(nod)
+        print(str(nod) + " " + str(label))
+    print d
+    return d
+    
+
+def draw_graph(graph, dic_label, labels=None, graph_layout='spectral',
+               node_size=20, node_alpha=1,
                node_text_size=0,
                edge_color='blue', edge_alpha=0.3, edge_tickness=0.1,
                edge_text_pos=0.3,
@@ -52,10 +76,17 @@ def draw_graph(graph, labels=None, graph_layout='spectral',
         graph_pos=nx.random_layout(G)
     else:
         graph_pos=nx.shell_layout(G)
-
+    
+    
     # draw graph
-    nx.draw_networkx_nodes(G,graph_pos,node_size=node_size, 
-                           alpha=node_alpha, node_color=node_color)
+    i=0
+    colors = get_N_HexCol(len(dic_label))
+    for _,nods in dic_label.iteritems():
+        print("couleurs : " + str(nods) + str(colors[i]))
+        nx.draw_networkx_nodes(G,graph_pos,nodelist=nods,node_size=node_size, 
+                           alpha=node_alpha, node_color=colors[i])
+        i = i+1
+    
     nx.draw_networkx_edges(G,graph_pos,width=edge_tickness,
                            alpha=edge_alpha,edge_color=edge_color)
     if labels is None:
@@ -69,7 +100,11 @@ def draw_graph(graph, labels=None, graph_layout='spectral',
 
 seed(1)
 f = open("graph00.txt", "w")
-G = generate_random_graph(f, 4, 100, 0.5, 0.001)
+labels = open("oo.txt", "r")
+G = generate_random_graph(f, 4, 100, 0.9, 0.001)
+d=parse_label(labels)
+
 f.close()
-print(G)
-draw_graph(G)
+labels.close()
+#print(G)
+draw_graph(G, d)
