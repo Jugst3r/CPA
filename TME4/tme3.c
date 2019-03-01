@@ -23,7 +23,6 @@ typedef struct Element Element;
 struct Element
 {
   unsigned int nombre;
-  unsigned int label;
   Element *suivant;
 };
 
@@ -38,6 +37,7 @@ Element *add(int voisin, Element *liste){
 struct __LabeledElement{
   Element *voisins;
   unsigned int label;
+  unsigned int ident;
 };
 typedef struct __LabeledElement *LabeledElement;
 typedef LabeledElement *adjlist;
@@ -51,6 +51,7 @@ LabeledElement *adjacency_list(FILE *f, int *rename_tab, unsigned int nb_nodes){
     nodes[i] = (LabeledElement)malloc(sizeof(struct __LabeledElement));
     nodes[i]->voisins = NULL;
     nodes[i]->label = labels++;
+    nodes[i]->ident = i;
     
   }
   
@@ -68,10 +69,11 @@ LabeledElement *adjacency_list(FILE *f, int *rename_tab, unsigned int nb_nodes){
   return nodes;
 }
 
-void print_adjacency_list(Element **lst, int nb_nodes){
+void print_adjacency_list(adjlist lst, int nb_nodes){
   unsigned int i, j;
   for(i=0; i < nb_nodes; i++){
-    Element *node = lst[i];
+    printf("Les voisins de %d sont ", i);
+    Element *node = lst[i]->voisins;
     while(node){
       printf("%u ", node->nombre);
       node = node->suivant;
@@ -80,10 +82,10 @@ void print_adjacency_list(Element **lst, int nb_nodes){
   }
 }
 
-void free_adjacency_list(Element **lst, int nb_nodes){
+void free_adjacency_list(adjlist lst, int nb_nodes){
   unsigned int i, j;
   for(i=0; i < nb_nodes; i++){
-    Element *node = lst[i];
+    Element *node = lst[i]->voisins;
     while(node){
       Element *tmp = node->suivant;
       free(node);
@@ -135,48 +137,58 @@ unsigned int* rename_nods(FILE *f_in, unsigned int *nb_nodes){
   return rename_tab;
 
 }
-void swap(adjlist G, size_t i, size_t j) {
+void swap(adjlist G, size_t i, size_t j, unsigned int *pos_tab) {
   LabeledElement temp = G[i];
+  int tmp = pos_tab[i];
+  pos_tab[i] = pos_tab[j];
+  pos_tab[j] = pos_tab[i];
   G[i] = G[j];
   G[j] = temp;
 }
 
-void fisher_yates_shuffle(adjlist G,unsigned int n) {
+void fisher_yates_shuffle(adjlist G,unsigned int n, unsigned int *pos_tab) {
   unsigned int i;    
   for (i = 0; i < n; i++){
-    printf("hello %d\n", (n-1-i));
-    swap(G, i, i+(rand()%(n-i))); // swap element with random later element
+    swap(G, i, i+(rand()%(n-i)), pos_tab); // swap element with random later element
   }
 }
 
 
 void label_propagation(adjlist G, unsigned int nb_nodes){
   size_t memory_block = sizeof(unsigned int)*nb_nodes;
+  unsigned int *pos_tab = malloc(memory_block);
   unsigned int *freq = malloc(memory_block);	
   unsigned int *found_labels = malloc(memory_block);	
   unsigned int i, j, cpt, max_freq, max_label;
   unsigned int step = 0;
   memset(freq, 0, memory_block);
   memset(found_labels, 0, memory_block);
+
+  for(i=0;i<nb_nodes;i++){
+    pos_tab[i] = i;
+  }
   int flag, stopped=0;
 
+  unsigned int count = 0;
   while(!stopped){
-    printf("hello2\n");
-    fisher_yates_shuffle(G, nb_nodes);
+    fisher_yates_shuffle(G, nb_nodes, pos_tab);
     stopped = 1;
     for(i=0;i<nb_nodes;i++){
       cpt=0;
       max_freq = 0;
       Element *voisins = G[i]->voisins;
       while(voisins){
-        if(freq[G[voisins->nombre]->label] == 0){
-          found_labels[cpt++] = G[voisins->nombre]->label;			
+        if(freq[G[pos_tab[voisins->nombre]]->label] == 0){
+          printf("voisin de %d la frequence est  %d\n", i, voisins->nombre);
+          found_labels[cpt++] = G[pos_tab[voisins->nombre]]->label;			
         }
-        freq[G[voisins->nombre]->label] ++;
+        else{
+          printf("voisin de %d la frequence n'est pas  %d\n", i,voisins->nombre);          
+        }
+        freq[G[pos_tab[voisins->nombre]]->label] ++;
         voisins = voisins->suivant;
       }
       for (j=0; j<cpt;j++){
-        printf("hello2 %d\n", found_labels[j]);
         if(freq[found_labels[j]] > max_freq){
           max_freq = freq[found_labels[j]];
           max_label = found_labels[j];
@@ -184,11 +196,10 @@ void label_propagation(adjlist G, unsigned int nb_nodes){
         }
         if(step>0 && freq[found_labels[j]] == max_freq)
           flag=1;
-        printf("hello3\n");
         freq[found_labels[j]] = 0;
       }
-      G[i]->label = max_label;
-      if(!flag)
+      G[pos_tab[i]]->label = max_label;
+      if(flag)
         stopped = 0;
     }
     step++;
@@ -201,8 +212,7 @@ void write_labels_to_file(FILE *f, adjlist G, unsigned int n){
 
 
   for(i=0;i<n;i++){
-    printf("hello4\n");
-    fprintf(f, "%u %u\n", i, G[i]->label);
+    fprintf(f, "%u %u\n", G[i]->ident, G[i]->label);
   }
 }
 
@@ -221,9 +231,13 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "\nErreur: Impossible de lire le fichier %s\n", ENTREE);
   }
   f_out = fopen(output, "w");
+  if (f_out == NULL){
+    printf("Erreur open file\n");
+  }
   unsigned int nb_nodes;
   unsigned int *rename_tab = rename_nods(f_in, &nb_nodes);
   adjlist G = adjacency_list(f_in, rename_tab, nb_nodes);
+  print_adjacency_list(G, nb_nodes);
   label_propagation(G, nb_nodes);
   write_labels_to_file(f_out, G, nb_nodes);
   
