@@ -15,21 +15,20 @@ import colorsys
 
 def get_N_HexCol(N=5):
 
-    HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in xrange(0,N*100,100)]
+    HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
     hex_out = []
     for rgb in HSV_tuples:
         rgb = map(lambda x: int(x*255),colorsys.hsv_to_rgb(*rgb))
-        hex_out.append("#" + str("".join(map(lambda x: chr(x).encode('hex'),rgb))))
+        hex_out.append("#" + str("".join(map(lambda x: chr(x).encode("utf-8").hex(),rgb))))
     return hex_out
 
 print(get_N_HexCol())
 
 def generate_random_graph (f, nb_cluster, cluster_size, p, q):
-    nods = range (nb_cluster*cluster_size)
     #could iterate over probabilities and pick random nods
     edges = []
-    for n in nods:
-        for n2 in nods:
+    for n in range(nb_cluster*cluster_size):
+        for n2 in range(n+1, nb_cluster*cluster_size):
             #same cluster
             if n//100 == n2//100:
                 if(random()<p):
@@ -39,6 +38,7 @@ def generate_random_graph (f, nb_cluster, cluster_size, p, q):
                 if(random()<q):
                     edges.append([n, n2])
                     f.write(str(n) + "\t" + str(n2) + "\n")
+        
     return edges
             
 
@@ -48,7 +48,6 @@ def parse_label(f):
         (nod, label) = map(int, line.split())
         d[label].append(nod)
         print(str(nod) + " " + str(label))
-    print d
     return d
     
 
@@ -81,8 +80,8 @@ def draw_graph(graph, dic_label, labels=None, graph_layout='spectral',
     # draw graph
     i=0
     colors = get_N_HexCol(len(dic_label))
-    for _,nods in dic_label.iteritems():
-        print("couleurs : " + str(nods) + str(colors[i]))
+    print (colors)
+    for _,nods in dic_label.items():
         nx.draw_networkx_nodes(G,graph_pos,nodelist=nods,node_size=node_size, 
                            alpha=node_alpha, node_color=colors[i])
         i = i+1
@@ -97,11 +96,14 @@ def draw_graph(graph, dic_label, labels=None, graph_layout='spectral',
     plt.show()
 
     
+import os
 
 seed(1)
 f = open("graph00.txt", "w")
-labels = open("oo.txt", "r")
-G = generate_random_graph(f, 4, 100, 0.9, 0.001)
+G = generate_random_graph(f, 4, 100, 0.3, 0.01)
+print("over")
+os.execv("./tme4", ["tme4", "graph00.txt", "output.txt"])
+labels = open("output.txt", "r")
 d=parse_label(labels)
 
 f.close()

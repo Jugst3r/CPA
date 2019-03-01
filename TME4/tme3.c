@@ -139,11 +139,13 @@ unsigned int* rename_nods(FILE *f_in, unsigned int *nb_nodes){
 }
 void swap(adjlist G, size_t i, size_t j, unsigned int *pos_tab) {
   LabeledElement temp = G[i];
+    printf("Avant: G[i] = %d\n", G[i]->ident);
   int tmp = pos_tab[i];
-  pos_tab[i] = pos_tab[j];
-  pos_tab[j] = pos_tab[i];
+  pos_tab[G[i]->ident] = j;//pos_tab[j];
+  pos_tab[G[j]->ident] = i;//tmp;
   G[i] = G[j];
   G[j] = temp;
+  printf("apres: G[j] %d\n", G[j]->ident);
 }
 
 void fisher_yates_shuffle(adjlist G,unsigned int n, unsigned int *pos_tab) {
@@ -179,16 +181,14 @@ void label_propagation(adjlist G, unsigned int nb_nodes){
       Element *voisins = G[i]->voisins;
       while(voisins){
         if(freq[G[pos_tab[voisins->nombre]]->label] == 0){
-          printf("voisin de %d la frequence est  %d\n", i, voisins->nombre);
           found_labels[cpt++] = G[pos_tab[voisins->nombre]]->label;			
         }
-        else{
-          printf("voisin de %d la frequence n'est pas  %d\n", i,voisins->nombre);          
-        }
+          printf("voisin de %d est  %d le label est %d\n", G[i]->ident, G[pos_tab[voisins->nombre]]->ident, G[pos_tab[voisins->nombre]]->label);
         freq[G[pos_tab[voisins->nombre]]->label] ++;
         voisins = voisins->suivant;
       }
       for (j=0; j<cpt;j++){
+          printf("max_label : %d\n", max_label);
         if(freq[found_labels[j]] > max_freq){
           max_freq = freq[found_labels[j]];
           max_label = found_labels[j];
@@ -198,9 +198,13 @@ void label_propagation(adjlist G, unsigned int nb_nodes){
           flag=1;
         freq[found_labels[j]] = 0;
       }
-      G[pos_tab[i]]->label = max_label;
+    if(G[i]->label != max_label)
+        stopped=0;
+      G[i]->label = max_label;
+        
       if(flag)
-        stopped = 0;
+        stopped = 1;
+        
     }
     step++;
   }
@@ -238,9 +242,12 @@ int main(int argc, char *argv[]) {
   unsigned int *rename_tab = rename_nods(f_in, &nb_nodes);
   adjlist G = adjacency_list(f_in, rename_tab, nb_nodes);
   print_adjacency_list(G, nb_nodes);
+    
+
   label_propagation(G, nb_nodes);
   write_labels_to_file(f_out, G, nb_nodes);
   
+    
   //print_matrix(m, nb_nodes);
   
   //printf("%d", special_quantity("email-Eu-core.txt", 1005));
