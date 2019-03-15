@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include<time.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+#include<string.h>
 #define SIZE_OF_LINE 81
 
 #define IGNORE_COMMENTS char is_comment;        \
@@ -17,45 +21,57 @@ typedef struct NodDegree *NodDegree;
 struct NodDegree{
   unsigned int *voisins;
   unsigned int degree;
+  unsigned int ident;
+  double score;
 };
 
-double *prodmatvect(NodDegree *G, double *A, unsigned n){
-  double *B = malloc(sizeof(double)*n);
+void prodmatvect(NodDegree *G, double *A, unsigned n, double *B){
   unsigned i, j;
   for(i=0; i < n; i++){
     B[i] = 0;
+  }
+  for(i=0; i < n; i++){
     for(j=0; j <  G[i]->degree; j++){
       unsigned v = G[i]->voisins[j];
+      //      printf("v: %u, A[i] = %g, degre : %u\n", v, A[i], G[i]->degree); 
       B[v] += (A[i]/G[i]->degree);
+      printf("B[%u] = %g\n", v, B[v]);
     }
   }
-  return B;
 }
 
 double *page_rank(NodDegree *G, float alpha, unsigned t, unsigned n){
   double *I = malloc(sizeof(double)*n);
+  double *P = malloc(sizeof(double)*n);
+  double *P_tmp = malloc(sizeof(double)*n);
   unsigned i,j;
   for(i = 0; i < n; i++){
     I[i] = 1.0/n;
+    P_tmp[i] = 1.0/n;
+    P[i] = 1.0/n;
   }
 
-  double *P = I;
+
   unsigned norm = 0;
   for(i = 0; i < t; i++){
 
-    P = prodmatvect(G, P, n);
+    prodmatvect(G, P_tmp, n, P);
   
     norm = 0;
     for(j=0; j<n; j++){
+      printf("P[j] before vaut %lf\n", P[j]);
       P[j] = (1-alpha)*P[j] + alpha*I[j];
       norm += P[j];
     }
-    for(j=0; j<n; j++)
-      //printf("P[j] before vaut %lf\n", P[j]);
+    for(j=0; j<n; j++){
       P[j] += (1-norm)/(1.0*n);
+      P_tmp[j] = P[j];
+    }
     //printf("P[j] after vaut %lf\n", P[j]);
-      printf("Finished iteration\n");
+    printf("Finished iteration\n");
   }
+  free(I);
+  free(P_tmp);
    
   return P;
 }
@@ -72,6 +88,7 @@ NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_node
   for(i=0; i < nb_nodes; i++){
     nodes[i] = (NodDegree)malloc(sizeof(struct NodDegree));
     nodes[i]->degree=0;
+    nodes[i]->ident = i;
     nb_neighbors_added[i] = 0;
   }
 
@@ -110,97 +127,133 @@ NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_node
 }
 
 
-void print_highest_page_rank(double *P, unsigned nb_nodes, unsigned *page_tab){
+void print_highest_lowest_page_rank(char *link, NodDegree *G, unsigned nb_nodes, unsigned *page_tab){
   double max = 0;
   unsigned max_page=0;
-  unsigned i;
-  for(i=0; i<nb_nodes; i++){
-    if(P[i]>1.0)
-      printf("P[i] vaut %lf\n", P[i]);
-    if(P[i]>max){
-      max = P[i];
-      max_page = i;
+  unsigned i, j;
+  unsigned start=0;
+  for(j=0;j<2;j++){
+    if(j==0)
+      printf("Highest scores : \n");
+    else
+      printf("------------------------------------------\nLowest scores : \n");
+    for(i=start; i<start+5; i++){
+      printf("score is %g for page %u\n", G[i]->score, page_tab[G[i]->ident]);
+      if(strcmp(link, "") != 0 && !fork()){
+        char *argv[5];
+        argv[0] = "grep";
+        argv[1] = "-E";
+        argv[2] = malloc(sizeof(char)*128);
+        sprintf(argv[2], "^%d[[:blank:]]", page_tab[G[i]->ident]);
+        argv[3] = link;
+        argv[4] = NULL;
+        execv("/bin/grep", argv);
+      }
+      
+      else{
+        wait(NULL);
+      }
     }
+    start = nb_nodes-5;
   }
-  printf("Highest page rank is page %u with score %g\n", page_tab[max_page], max);
 }
 
-void do_it_all(char * ENTREE) {
 
-  clock_t start = clock();
-  clock_t end;
-  double elapsed_time;
+  int cmpfunc (const void * a, const void * b)
+  {
+    NodDegree f = *((NodDegree *)a);
+    NodDegree s = *((NodDegree *)b);
+    if (f->score < s->score) return  1;
+    if (f->score > s->score) return -1;
 
-  FILE * f_in;
-  char line[SIZE_OF_LINE];
+    return 0;  
+  }
+
+
+  void do_it_all(char * ENTREE, char * linking) {
+
+    clock_t start = clock();
+    clock_t end;
+    double elapsed_time;
+
+    FILE * f_in;
+    char line[SIZE_OF_LINE];
   
-  if ((f_in = fopen(ENTREE, "r")) == NULL) {
-    fprintf(stderr, "\nErreur: Impossible de lire le fichier %s\n", ENTREE);
-  }
-  unsigned int i = 0, j=0;
-  unsigned int max = 0;
-
-  while (fgets(line, SIZE_OF_LINE, f_in) != NULL) {
-    IGNORE_COMMENTS;
-    sscanf(line, "%u %u", & i, & j);
-    unsigned int m = MAX(i, j);
-    
-    if (m > max) {
-      max = m;
+    if ((f_in = fopen(ENTREE, "r")) == NULL) {
+      fprintf(stderr, "\nErreur: Impossible de lire le fichier %s\n", ENTREE);
+      return;
     }
-  }
+    unsigned int i = 0, j=0;
+    unsigned int max = 0;
+
+    while (fgets(line, SIZE_OF_LINE, f_in) != NULL) {
+      IGNORE_COMMENTS;
+      sscanf(line, "%u %u", & i, & j);
+      unsigned int m = MAX(i, j);
+    
+      if (m > max) {
+        max = m;
+      }
+    }
 
 
  
-  unsigned int *rename_tab = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
-  unsigned int *page_tab = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
-  i=0;
-  for(i = 0; i < max+1; i++){
-    rename_tab[i] = 0;
-  }
-
-  fseek(f_in, 0, SEEK_SET);
-  while (fgets(line, SIZE_OF_LINE, f_in) != NULL) {
-    IGNORE_COMMENTS;
-    sscanf(line, "%u %u", & i, & j);
-    rename_tab[i] = 1;
-    rename_tab[j] = 1;
-  }
-  /*cpt is at the end the number of nodes*/
-  unsigned int cpt = 0;
-
-  for(i = 0; i < max+1; i++){
-    if(rename_tab[i] == 1){
-      rename_tab[i] = cpt;
-      page_tab[cpt] = i;
-      cpt++;
+    unsigned int *rename_tab = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
+    unsigned int *page_tab = (unsigned int*)malloc(sizeof(unsigned int)*(max+1));
+    i=0;
+    for(i = 0; i < max+1; i++){
+      rename_tab[i] = 0;
     }
+
+    fseek(f_in, 0, SEEK_SET);
+    while (fgets(line, SIZE_OF_LINE, f_in) != NULL) {
+      IGNORE_COMMENTS;
+      sscanf(line, "%u %u", & i, & j);
+      rename_tab[i] = 1;
+      rename_tab[j] = 1;
+    }
+    /*cpt is at the end the number of nodes*/
+    unsigned int cpt = 0;
+
+    for(i = 0; i < max+1; i++){
+      if(rename_tab[i] == 1){
+        rename_tab[i] = cpt;
+        page_tab[cpt] = i;
+        cpt++;
+      }
+    }
+
+  
+    //not renaming this time
+    unsigned nb_nodes = cpt;
+    printf("Computing graph data structure\n");
+    NodDegree *G = adjacency_tab(f_in, rename_tab, nb_nodes);
+    printf("Starting page rank\n");
+    double *P = page_rank(G, 0.15, 1, nb_nodes);
+    printf("Retrieving scores from computed page rank\n");
+    for(i=0;i<nb_nodes;i++)
+      G[i]->score = P[i];
+    printf("Sorting nods on page rank\n");  
+    qsort(G, nb_nodes, sizeof(NodDegree), cmpfunc);
+    printf("Printing\n");
+    print_highest_lowest_page_rank(linking ,G, nb_nodes, page_tab);
+    fclose(f_in);
   }
   
-  //not renaming this time
-  unsigned nb_nodes = cpt;
-  printf("Computing graph data structure\n");
-  NodDegree *G = adjacency_tab(f_in, rename_tab, nb_nodes);
-  printf("Starting page rank\n");
-  double *P = page_rank(G, 0.15, 10, nb_nodes);
-  print_highest_page_rank(P, nb_nodes, page_tab);
-}
-  
 
-int main(int argc, char *argv[]) {
-	
-  clock_t start = clock();
-  do_it_all(argv[1]);
-  clock_t end = clock();
+  int main(int argc, char *argv[]) {
+    clock_t start = clock();
+    do_it_all(argv[1], argv[2]);
+    clock_t end = clock();
 
-  srand(time(NULL));
-  //print_matrix(m, nb_nodes);
+    srand(time(NULL));
+    //print_matrix(m, nb_nodes);
   
-  //printf("%d", special_quantity("email-Eu-core.txt", 1005));
-  //degree("email-Eu-core.txt",1005);
-  //sscanf("23 24","%d %d",&a,&b);
-  //printf("%d",a);
-  //printf("%d",b);
-  return 0;
-}
+    //printf("%d", special_quantity("email-Eu-core.txt", 1005));
+    //degree("email-Eu-core.txt",1005);
+    //sscanf("23 24","%d %d",&a,&b);
+    //printf("%d",a);
+    //printf("%d",b);
+    return 0;
+  }
    
