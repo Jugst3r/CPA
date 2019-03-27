@@ -35,7 +35,6 @@ void prodmatvect(NodDegree *G, double *A, unsigned n, double *B){
       unsigned v = G[i]->voisins[j];
       //      printf("v: %u, A[i] = %g, degre : %u\n", v, A[i], G[i]->degree); 
       B[v] += (A[i]/G[i]->degree);
-      printf("B[%u] = %g\n", v, B[v]);
     }
   }
 }
@@ -52,23 +51,28 @@ double *page_rank(NodDegree *G, float alpha, unsigned t, unsigned n){
   }
 
 
-  unsigned norm = 0;
-  for(i = 0; i < t; i++){
-
-    prodmatvect(G, P_tmp, n, P);
+  double norm = 0;
+  int converging = 0;
+  i =0;
+  while (!converging && i < t){
+      converging = 1;
+      prodmatvect(G, P_tmp, n, P);
   
-    norm = 0;
-    for(j=0; j<n; j++){
-      printf("P[j] before vaut %lf\n", P[j]);
-      P[j] = (1-alpha)*P[j] + alpha*I[j];
-      norm += P[j];
-    }
-    for(j=0; j<n; j++){
-      P[j] += (1-norm)/(1.0*n);
-      P_tmp[j] = P[j];
-    }
-    //printf("P[j] after vaut %lf\n", P[j]);
-    printf("Finished iteration\n");
+      norm = 0;
+      for(j=0; j<n; j++){
+        P[j] = (1-alpha)*P[j] + alpha*I[j];
+        norm += P[j];
+        //printf("P[%d] before vaut %g\n", j,P[j]);
+      }
+      for(j=0; j<n; j++){
+        P[j] += (1-norm)/(1.0*n);
+        if(P_tmp[j] != P[j])
+          converging = 0;
+        P_tmp[j] = P[j];
+      }
+      //printf("P[j] after vaut %lf\n", P[j]);
+      printf("Finished iteration %d\n", i);
+      i = i+1;
   }
   free(I);
   free(P_tmp);
@@ -76,6 +80,21 @@ double *page_rank(NodDegree *G, float alpha, unsigned t, unsigned n){
   return P;
 }
 
+//must be done before sorting tab
+unsigned *in_degree (NodDegree *G, unsigned n){
+unsigned *in_degree_tab = (unsigned *)malloc(sizeof(unsigned)*n);
+unsigned i, j;
+for(i=0; i<n; i++)
+  in_degree_tab[i] = 0;
+
+for(i=0; i<n; i++){
+     for(j=0; j <  G[i]->degree; j++){
+       in_degree_tab[G[i]->voisins[j]]++;
+     }
+  }
+return in_degree_tab;
+  
+}
 
 //efficiency can be gained using adjacency_array which is much more compact
 NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_nodes){
@@ -133,7 +152,7 @@ void print_highest_lowest_page_rank(char *link, NodDegree *G, unsigned nb_nodes,
   unsigned i, j;
   unsigned start=0;
   for(j=0;j<2;j++){
-    if(j==0)
+    if(j==1)
       printf("Highest scores : \n");
     else
       printf("------------------------------------------\nLowest scores : \n");
@@ -163,8 +182,8 @@ void print_highest_lowest_page_rank(char *link, NodDegree *G, unsigned nb_nodes,
   {
     NodDegree f = *((NodDegree *)a);
     NodDegree s = *((NodDegree *)b);
-    if (f->score < s->score) return  1;
-    if (f->score > s->score) return -1;
+    if (f->score > s->score) return  1;
+    if (f->score < s->score) return -1;
 
     return 0;  
   }
@@ -228,13 +247,61 @@ void print_highest_lowest_page_rank(char *link, NodDegree *G, unsigned nb_nodes,
     unsigned nb_nodes = cpt;
     printf("Computing graph data structure\n");
     NodDegree *G = adjacency_tab(f_in, rename_tab, nb_nodes);
+
+
+    printf("Getting nodes in-degree\n");
+    unsigned *in_degree_tab = in_degree (G, nb_nodes);
+    char *c_out_1 = ("exo2-1.txt");
+    FILE *f_out_1 = fopen(c_out_1, "w");
+
+    char *c_out_2 = ("exo2-2.txt");
+    FILE *f_out_2 = fopen(c_out_2, "w");
+    
+    char *c_out_3 = ("exo2-3.txt");
+    FILE *f_out_3 = fopen(c_out_3, "w");
+
+    char *c_out_4 = ("exo2-4.txt");
+    FILE *f_out_4 = fopen(c_out_4, "w");
+
+    char *c_out_5 = ("exo2-5.txt");
+    FILE *f_out_5 = fopen(c_out_5, "w");
+    
+    char *c_out_6 = ("exo2-6.txt");
+    FILE *f_out_6 = fopen(c_out_6, "w");
+      
+    
     printf("Starting page rank\n");
-    double *P = page_rank(G, 0.15, 1, nb_nodes);
+    double *P = page_rank(G, 0.15, 10, nb_nodes);
+    double *P1 = page_rank(G, 0.1, 10, nb_nodes);
+    double *P2 = page_rank(G, 0.2, 10, nb_nodes);
+    double *P3 = page_rank(G, 0.5, 10, nb_nodes);
+    double *P4 = page_rank(G, 0.9, 10, nb_nodes);
+    
     printf("Retrieving scores from computed page rank\n");
     for(i=0;i<nb_nodes;i++)
       G[i]->score = P[i];
     printf("Sorting nods on page rank\n");  
     qsort(G, nb_nodes, sizeof(NodDegree), cmpfunc);
+
+    //Retrieving outputs
+    for(i=0; i<nb_nodes; i++){
+      fprintf(f_out_1, "%g %d\n", G[i]->score, in_degree_tab[G[i]->ident]);
+      fprintf(f_out_2, "%g %d\n", G[i]->score, G[i]->degree);
+      fprintf(f_out_3, "%g %g\n", G[i]->score, P1[G[i]->ident]);
+      fprintf(f_out_4, "%g %g\n", G[i]->score, P2[G[i]->ident]);
+      fprintf(f_out_5, "%g %g\n", G[i]->score, P3[G[i]->ident]);
+      fprintf(f_out_6, "%g %g\n", G[i]->score, P4[G[i]->ident]);
+      
+    }
+
+    //Close all output files
+    fclose(f_out_1);
+    fclose(f_out_2);
+    fclose(f_out_3);
+    fclose(f_out_4);
+    fclose(f_out_5);
+    fclose(f_out_6);
+    
     printf("Printing\n");
     print_highest_lowest_page_rank(linking ,G, nb_nodes, page_tab);
     fclose(f_in);
