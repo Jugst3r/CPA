@@ -119,6 +119,7 @@ NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_node
     IGNORE_COMMENTS;
     sscanf(line, "%u %u", & i, & j);
     i = rename_tab[i];
+    //j = rename_tab[j];
     nodes[i]->degree++;
     //    nodes[j]->degree++;
   }
@@ -178,7 +179,7 @@ void print_highest_lowest_page_rank(char *link, NodDegree *G, unsigned nb_nodes,
 }
 
 
-  int cmpfunc (const void * a, const void * b)
+int cmpfunc (const void * a, const void * b)
   {
     NodDegree f = *((NodDegree *)a);
     NodDegree s = *((NodDegree *)b);

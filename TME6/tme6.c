@@ -266,8 +266,11 @@ NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_node
     sscanf(line, "%u %u", & i, & j);
     i = rename_tab[i];
     nodes[i]->degree++;
+
+    j = rename_tab[j];
     nodes[j]->degree++;
-  }
+    
+    }
 
   //allocating nod neighbors
   for(i=0; i < nb_nodes; i++){
@@ -281,12 +284,17 @@ NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_node
     IGNORE_COMMENTS;
     sscanf(line, "%u %u", & i, & j);
     i = rename_tab[i];
-    j = rename_tab[j];
     nodes[i]->voisins[nb_neighbors_added[i]] = j;
-    nodes[j]->voisins[nb_neighbors_added[j]] = i;
+
 
     nb_neighbors_added[i]++;
+
+
+    
+    j = rename_tab[j];
+    nodes[j]->voisins[nb_neighbors_added[j]] = i;
     nb_neighbors_added[j]++;
+    
   }
   return nodes;
 }
@@ -325,6 +333,90 @@ void print_authors(char *link, unsigned *prefix, unsigned prefix_size, unsigned 
       }
   }
 }
+
+//exercice 3
+void mkscore(NodDegree *G, unsigned n, unsigned t){
+  unsigned *presency_tab = (unsigned *)malloc(sizeof(unsigned)*n);
+  unsigned i, j, k, l;
+
+  for(i=0; i<n; i++)
+    G[i]->score = 0;
+  printf("%u iteration\n", t);
+  for(l=0; l<t; l++)
+    for(i=0; i<n; i++){
+      for(k=0; k<G[i]->degree; k++){
+        j = G[i]->voisins[k];
+        //avoid treating 2 times the nod
+        if(j>i)
+          if (G[i]->score <= G[j]->score){
+            G[i]->score ++;
+          }
+          else
+            G[j]->score ++;
+
+      }
+
+    }
+
+  for(i=0; i<n; i++){
+    G[i]->score = G[i]->score/t;
+    printf("Score for %u is %g\n", G[i]->ident, G[i]->score);      
+  }
+    
+}
+
+
+
+int cmpfunc (const void * a, const void * b)
+  {
+    NodDegree f = *((NodDegree *)a);
+    NodDegree s = *((NodDegree *)b);
+    if (f->score > s->score) return  1;
+    if (f->score < s->score) return -1;
+
+    return 0;  
+  }
+
+void calculate_density_second_algo(NodDegree *G, unsigned n, unsigned t){
+
+  unsigned *presency_tab = (unsigned *)malloc(sizeof(unsigned)*n);
+  unsigned i, j;
+  mkscore(G, n, t);
+
+  qsort(G, n, sizeof(NodDegree), cmpfunc);
+
+  for(i=0; i<n; i++)
+    presency_tab[i] = 0;
+
+  double  max_average_degree = 0;
+  double  max_edge_density = 0;
+  double sum_degree_density;
+  unsigned m = 0;
+  unsigned prefix_size=0;
+
+
+  for(i=0;i<n;i++){
+    for(j=0;j<G[i]->degree;j++){
+      printf("m is worth %u\n", m);
+      if (presency_tab[G[i]->voisins[j]]){
+        m++;
+      }
+    }
+
+    if (sum_degree_density/i>=max_average_degree) {
+      max_average_degree = sum_degree_density ;
+      if(i>0)
+        max_edge_density = ((double) (2*m))/(i*(i-1));
+      prefix_size = i;
+    }
+    sum_degree_density += G[i]->score;
+    presency_tab[G[i]->ident]=1;
+  }
+  printf("For prefix of size %u, average degree density is %g and edge density is %g\n", prefix_size, max_average_degree, max_edge_density);
+  free(presency_tab);
+}
+
+
 
 
 void do_it_all(char * ENTREE, char * linking) {
@@ -388,9 +480,16 @@ void do_it_all(char * ENTREE, char * linking) {
   NodDegree *G = adjacency_tab(f_in, rename_tab, nb_nodes);
 
   unsigned prefix_size;
+
+  //ATTENTION: POUR LEXERCICE 3, LE GRAPHE EST NON ORIENTE, DONC IL FAUT MODIFIER DANS ADJACENCY_TAB
+  // LES LIGNES COMMENTEES ASSOCIEES
   unsigned *l = densest_core_order(G, nb_nodes, &prefix_size);
   printf("Printing\n");
-  print_authors(linking ,l,prefix_size,page_tab);
+  printf("linking vaut %s\n", linking);
+  if(linking != NULL){
+    print_authors(linking ,l,prefix_size,page_tab);
+  }
+  calculate_density_second_algo(G, nb_nodes, 2);
   fclose(f_in);
 }
   
