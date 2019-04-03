@@ -1,0 +1,35 @@
+set terminal pngcairo
+set style line 5 lw 3 lc rgb "black"
+f(x)=a*x+b
+set yrange[0:]
+
+set xlabel "Page rank with a=0.15"
+
+set output "exo2-1.png"
+set ylabel "in-degree"
+fit f(x) 'exo2-1.txt' via a, b
+plot 'exo2-1.txt', f(x) t "average" ls 5
+
+set output "exo2-2.png"
+set ylabel "out-degree"
+plot 'exo2-2.txt'
+
+set output "exo2-3.png"
+set ylabel "Page rank with a=0.1"
+fit f(x) 'exo2-3.txt' via a, b
+plot 'exo2-3.txt', f(x) t "average" ls 5
+
+set output "exo2-4.png"
+set ylabel "Page rank with a=0.2"
+fit f(x) 'exo2-4.txt' via a, b
+plot 'exo2-4.txt', f(x) t "average" ls 5
+
+set output "exo2-5.png"
+set ylabel "Page rank with a=0.5"
+fit f(x) 'exo2-5.txt' via a, b
+plot 'exo2-5.txt', f(x) t "average" ls 5
+
+set output "exo2-6.png"
+set ylabel "Page rank with a=0.9"
+fit f(x) 'exo2-6.txt' via a, b
+plot 'exo2-6.txt', f(x) t "average" ls 5
