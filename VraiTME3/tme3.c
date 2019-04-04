@@ -484,7 +484,7 @@ unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_ta
     j = new_ident[rename_tab[j]];
     unsigned int *U = nodes[i]->voisins;
     unsigned int *V = nodes[j]->voisins;
-    printf("examining edge %u %u, position in tab is %d %d\n", rename_tab[save_i], rename_tab[save_j],save_i, save_j);
+    //printf("examining edge %u %u, position in tab is %d %d\n", rename_tab[save_i], rename_tab[save_j],save_i, save_j);
 
     //compute intersection
     unsigned int *W = (unsigned int *)malloc(sizeof(MIN(nodes[i]->degree, nodes[j]->degree)));
@@ -495,7 +495,7 @@ unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_ta
 
       unsigned int u = nodes[i]->voisins[cpt_u];
       unsigned int v = nodes[j]->voisins[cpt_v];
-      printf("u vaut %u, u vaut %d\n", u, v);
+      //printf("u vaut %u, u vaut %d\n", u, v);
       if(u < v){
         cpt_u++;
       }
@@ -506,7 +506,7 @@ unsigned int computeTriangles(FILE *f, NodDegree *nodes, unsigned int *rename_ta
         //in intersection
         else{
           //triangle detected
-          printf("triangle {%u, %u, %u}\n",rename_tab[save_i],rename_tab[save_j],v); 
+          //printf("triangle {%u, %u, %u}\n",rename_tab[save_i],rename_tab[save_j],v); 
           cpt_u++;
           cpt_v++;
           nb_triangles++;

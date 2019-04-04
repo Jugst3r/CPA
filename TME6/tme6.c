@@ -285,15 +285,15 @@ NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_node
   while (fgets(line, SIZE_OF_LINE, f) != NULL) {
     IGNORE_COMMENTS;
     sscanf(line, "%u %u", & i, & j);
-    i = rename_tab[i];
+    i = rename_tab[i];    
+    j = rename_tab[j];
     nodes[i]->voisins[nb_neighbors_added[i]] = j;
 
 
     nb_neighbors_added[i]++;
 
 
-    
-    j = rename_tab[j];
+
     nodes[j]->voisins[nb_neighbors_added[j]] = i;
     nb_neighbors_added[j]++;
     
@@ -520,7 +520,7 @@ double max_triangle_density = 0;
   free(presency_tab);
 }
 
-void do_it_all(char * ENTREE, char * linking) {
+void do_it_all(char * ENTREE, char * linking, int op) {
 
   clock_t start = clock();
   clock_t end;
@@ -581,37 +581,46 @@ void do_it_all(char * ENTREE, char * linking) {
   NodDegree *G = adjacency_tab(f_in, rename_tab, nb_nodes);
 
   unsigned prefix_size;
+unsigned *l; 
 
-  //ATTENTION: POUR LEXERCICE 3, LE GRAPHE EST NON ORIENTE, DONC IL FAUT MODIFIER DANS ADJACENCY_TAB
-  // LES LIGNES COMMENTEES ASSOCIEES
-  unsigned *l = densest_core_order(G, nb_nodes, &prefix_size);
-  printf("Printing\n");
-  printf("linking vaut %s\n", linking);
+switch(op){
+    case 1:
+    l = densest_core_order(G, nb_nodes, &prefix_size);
+    printf("Printing\n");
+    printf("linking vaut %s\n", linking);
     /*
-  if(linking != NULL){
-    print_authors(linking ,l,prefix_size,page_tab);
+    if(linking != NULL){
+        print_authors(linking,l,prefix_size,page_tab);
   }
   */
+        free(l);
+        break;
+    case 3:
   calculate_density_second_algo(G, nb_nodes, 2);
+        break;
+    case 5:
+        
+    
     printf("Computing densest triangle graph\n");
 densest_triangle_subgraph(G, nb_nodes, 2);
+        break;
+    default:
+        printf("Unspecified operation\n");
+        break;
+}
   fclose(f_in);
 }
   
 
 int main(int argc, char *argv[]) {
   clock_t start = clock();
-  do_it_all(argv[1], argv[2]);
-  clock_t end = clock();
+    if(argc < 3){
+        printf("./tme5 sourcefile operation (linkingfile:optional)\n");
+        printf("Operations: 1 for k-core decomposition, 3 for densest subgraph, 5 for triangle densest subgraph\n");
+        return 0;
+    }
+  do_it_all(argv[1], argv[3], atoi(argv[2]));
 
-  srand(time(NULL));
-  //print_matrix(m, nb_nodes);
-  
-  //printf("%d", special_quantity("email-Eu-core.txt", 1005));
-  //degree("email-Eu-core.txt",1005);
-  //sscanf("23 24","%d %d",&a,&b);
-  //printf("%d",a);
-  //printf("%d",b);
   return 0;
 }
    
