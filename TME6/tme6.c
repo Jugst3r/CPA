@@ -2,18 +2,14 @@
 #include<time.h>
 #include <stdlib.h>
 #include <unistd.h>
-/*
 #include<sys/types.h>
 #include<sys/wait.h>
-*/
 #include<string.h>
 #define SIZE_OF_LINE 81
 
 #define IGNORE_COMMENTS char is_comment;        \
   sscanf(line, "%c", &is_comment);              \
   if(is_comment == '#'){                        \
-    printf("Commentaire, skip line\n");         \
-    printf("%s\n", line);                       \
     continue;                                   \
   }                                             \
 
@@ -186,7 +182,8 @@ Tas *make_tas(NodDegree *G, unsigned nb_nodes){
   return tas;
 }
 
-unsigned* k_core_decomp (NodDegree* G, unsigned nb_nodes){
+
+unsigned* k_core_decomp(NodDegree* G, unsigned nb_nodes, FILE *f){
   unsigned int i  = 0;
   unsigned c = 0;
   Tas *t = make_tas(G, nb_nodes);
@@ -197,19 +194,26 @@ unsigned* k_core_decomp (NodDegree* G, unsigned nb_nodes){
   while(t->last > 1){  
     Pair p =  retireTete(t, G);
     c = MAX(c, p.degree);
+
     p.degree = c;
     l[nb_nodes-i-1] = p.ident;
     i++;
-    
+    if (f!=NULL){
+      fprintf(f,"%u %u\n", G[p.ident]->degree,c); 
+    }
+    //pour exercice 2
+
+      
   }
+  
   if(i!=nb_nodes){
     printf("i=%u n'a pas la valeur attendue\n",i);
   }
   return l;
 }
 
-unsigned *densest_core_order(NodDegree* G, unsigned nb_nodes, unsigned *prefix_size_res){
-  unsigned *l = k_core_decomp(G,nb_nodes);
+unsigned *densest_core_order(NodDegree* G, unsigned nb_nodes, unsigned *prefix_size_res, FILE *f_out){
+  unsigned *l = k_core_decomp(G,nb_nodes, f_out);
   unsigned *tab = (unsigned*)malloc(sizeof(unsigned)*(nb_nodes));
   unsigned i, j;
   double  max_average_degree = 0;
@@ -233,16 +237,11 @@ unsigned *densest_core_order(NodDegree* G, unsigned nb_nodes, unsigned *prefix_s
       max_edge_density = ((double) (2*m))/(n*(n-1));
       prefix_size = n;
     }
-    /*
-    if (((double) (2*m))/(n*(n-1)) > max_edge_density ){
-      max_edge_density = ((double) (2*m))/(n*(n-1));
-    }
-    */
   }
 
   printf("For prefix of size %u, average degree density is %g and edge density is %g\n", prefix_size, max_average_degree, max_edge_density);
   *prefix_size_res = prefix_size;
-    free(tab);
+  free(tab);
   return l;
 }
 
@@ -272,7 +271,7 @@ NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_node
     j = rename_tab[j];
     nodes[j]->degree++;
     
-    }
+  }
 
   //allocating nod neighbors
   for(i=0; i < nb_nodes; i++){
@@ -298,7 +297,7 @@ NodDegree *adjacency_tab(FILE *f, unsigned int *rename_tab, unsigned int nb_node
     nb_neighbors_added[j]++;
     
   }
-    free(nb_neighbors_added);
+  free(nb_neighbors_added);
   return nodes;
 }
 
@@ -313,30 +312,30 @@ void afficheGraphe(NodDegree *G, unsigned nb_nodes){
 }
 
 
-/*
+
 void print_authors(char *link, unsigned *prefix, unsigned prefix_size, unsigned *page_tab){
   double max = 0;
   unsigned max_page=0;
   unsigned i, j;
   unsigned start=0;
   for(i=0; i<prefix_size; i++){
-      if(strcmp(link, "") != 0 && !fork()){
-        char *argv[5];
-        argv[0] = "grep";
-        argv[1] = "-E";
-        argv[2] = malloc(sizeof(char)*128);
-        sprintf(argv[2], "^%d[[:blank:]]", page_tab[prefix[i]]);
-        argv[3] = link;
-        argv[4] = NULL;
-        execv("/bin/grep", argv);
-      }
+    if(strcmp(link, "") != 0 && !fork()){
+      char *argv[5];
+      argv[0] = "grep";
+      argv[1] = "-E";
+      argv[2] = malloc(sizeof(char)*128);
+      sprintf(argv[2], "^%d[[:blank:]]", page_tab[prefix[i]]);
+      argv[3] = link;
+      argv[4] = NULL;
+      execv("/bin/grep", argv);
+    }
       
-      else{
-        wait(NULL);
-      }
+    else{
+      wait(NULL);
+    }
   }
 }
-*/
+
 //exercice 3
 void mkscore(NodDegree *G, unsigned n, unsigned t){
   unsigned *presency_tab = (unsigned *)malloc(sizeof(unsigned)*n);
@@ -370,14 +369,14 @@ void mkscore(NodDegree *G, unsigned n, unsigned t){
 
 
 int cmpfunc (const void * a, const void * b)
-  {
-    NodDegree f = *((NodDegree *)a);
-    NodDegree s = *((NodDegree *)b);
-    if (f->score < s->score) return  1;
-    if (f->score > s->score) return -1;
+{
+  NodDegree f = *((NodDegree *)a);
+  NodDegree s = *((NodDegree *)b);
+  if (f->score < s->score) return  1;
+  if (f->score > s->score) return -1;
 
-    return 0;  
-  }
+  return 0;  
+}
 
 void calculate_density_second_algo(NodDegree *G, unsigned n, unsigned t){
 
@@ -403,15 +402,15 @@ void calculate_density_second_algo(NodDegree *G, unsigned n, unsigned t){
         m++;
       }
     }
-      //hackish..
-      i++;
+    //hackish..
+    i++;
     if (sum_degree_density/i>=max_average_degree) {
       max_average_degree = sum_degree_density/i ;
       if(i>0)
         max_edge_density = ((double) (2*m))/(i*(i-1));
       prefix_size = i;
     }
-      i--;
+    i--;
     sum_degree_density += G[i]->score;
     presency_tab[G[i]->ident]=1;
   }
@@ -421,35 +420,35 @@ void calculate_density_second_algo(NodDegree *G, unsigned n, unsigned t){
 
 
 int cmpunsigned (const void * a, const void * b)
-  {
-    unsigned f = *((unsigned *)a);
-    unsigned s = *((unsigned *)b);
-    if (f > s) return  1;
-    if (f < s) return -1;
+{
+  unsigned f = *((unsigned *)a);
+  unsigned s = *((unsigned *)b);
+  if (f > s) return  1;
+  if (f < s) return -1;
 
-    return 0;  
-  }
+  return 0;  
+}
 
 void afficher_G(NodDegree *G, unsigned n){
-    unsigned i, j;
-    for(i=0; i<n; i++){
-        printf("sommet %u a pour degre %u et pour voisins ",G[i]->ident, G[i]->degree);
-        for(j=0; j<G[i]->degree; j++)
-            printf("%u, ",G[i]->voisins[j]);
-        printf("\n");
-    }
+  unsigned i, j;
+  for(i=0; i<n; i++){
+    printf("sommet %u a pour degre %u et pour voisins ",G[i]->ident, G[i]->degree);
+    for(j=0; j<G[i]->degree; j++)
+      printf("%u, ",G[i]->voisins[j]);
+    printf("\n");
+  }
 }
 
 void afficher_t(unsigned *t, unsigned n){
-    printf("Tableau pos_elem vaut ");
-    unsigned i;
-    for(i=0; i<n; i++)
-        printf("%u, ", t[i]);
-    printf("\n");
+  printf("Tableau pos_elem vaut ");
+  unsigned i;
+  for(i=0; i<n; i++)
+    printf("%u, ", t[i]);
+  printf("\n");
 }
 void densest_triangle_subgraph(NodDegree *G, unsigned n, unsigned t){
-      unsigned *presency_tab = (unsigned *)malloc(sizeof(unsigned)*n);
-    unsigned *pos_elem = (unsigned *)malloc(sizeof(unsigned)*n);
+  unsigned *presency_tab = (unsigned *)malloc(sizeof(unsigned)*n);
+  unsigned *pos_elem = (unsigned *)malloc(sizeof(unsigned)*n);
   unsigned i, j,  v, cpt_u, cpt_v;
   mkscore(G, n, t);
 
@@ -461,50 +460,50 @@ void densest_triangle_subgraph(NodDegree *G, unsigned n, unsigned t){
   double  max_average_degree = 0;
   double  max_edge_density = 0;
   double sum_degree_density = 0;
-double max_triangle_density = 0;
+  double max_triangle_density = 0;
   unsigned m = 0;
   unsigned prefix_size=0;
-    unsigned nb_triangles = 0, nb_triangles_i = 0;
+  unsigned nb_triangles = 0, nb_triangles_i = 0;
 
-    for(i=0; i<n; i++)
-        pos_elem[G[i]->ident] = i;
-    for(i=0; i<n; i++){
-        for(j=0; j<G[i]->degree; j++)
-            G[i]->voisins[j] = pos_elem[G[i]->voisins[j]];
-        qsort(G[i]->voisins, G[i]->degree, sizeof(unsigned), cmpunsigned);
-    }
+  for(i=0; i<n; i++)
+    pos_elem[G[i]->ident] = i;
+  for(i=0; i<n; i++){
+    for(j=0; j<G[i]->degree; j++)
+      G[i]->voisins[j] = pos_elem[G[i]->voisins[j]];
+    qsort(G[i]->voisins, G[i]->degree, sizeof(unsigned), cmpunsigned);
+  }
     
   for(i=0;i<n;i++){
-        nb_triangles_i=0;
+    nb_triangles_i=0;
     for(j=0;j<G[i]->degree;j++){
-        v = G[i]->voisins[j];
+      v = G[i]->voisins[j];
       if (v<i){
         //look for triangles
-          cpt_u=0;
-          cpt_v=0;
+        cpt_u=0;
+        cpt_v=0;
         while(cpt_u < G[i]->degree && cpt_v < G[v]->degree && G[v]->voisins[cpt_v] < i){
-            if(G[i]->voisins[cpt_u] < G[v]->voisins[cpt_v]){
-                cpt_u++;
+          if(G[i]->voisins[cpt_u] < G[v]->voisins[cpt_v]){
+            cpt_u++;
+          }
+          else {
+            if (G[i]->voisins[cpt_u] > G[v]->voisins[cpt_v]){
+              cpt_v++;
             }
-            else {
-                if (G[i]->voisins[cpt_u] > G[v]->voisins[cpt_v]){
-                    cpt_v++;
-                }
-                else{
-                    cpt_u++;
-                    cpt_v++;
-                    nb_triangles_i ++;
-                }
+            else{
+              cpt_u++;
+              cpt_v++;
+              nb_triangles_i ++;
             }
+          }
         }
         m++;
       }
     }
-      nb_triangles += nb_triangles_i/2;
+    nb_triangles += nb_triangles_i/2;
     //hackish..
-      i++;
+    i++;
     if ((double)nb_triangles/i>=max_triangle_density) {
-        max_triangle_density = ((double)nb_triangles)/i;
+      max_triangle_density = ((double)nb_triangles)/i;
       max_average_degree = sum_degree_density/i;
       if(i>1)
         max_edge_density = ((double) (2*m))/(i*(i-1));
@@ -515,12 +514,12 @@ double max_triangle_density = 0;
     presency_tab[G[i]->ident]=1;
   }
   
-    printf("For the whole graph, i have found %u triangles\n", nb_triangles);
+  printf("For the whole graph, i have found %u triangles\n", nb_triangles);
   printf("For prefix of size %u, triangle density is %g average degree density is %g and edge density is %g\n", prefix_size, max_triangle_density,max_average_degree, max_edge_density);
   free(presency_tab);
 }
 
-void do_it_all(char * ENTREE, char * linking, int op) {
+void do_it_all(char * ENTREE, char * linking, int op, char *out) {
 
   clock_t start = clock();
   clock_t end;
@@ -581,45 +580,53 @@ void do_it_all(char * ENTREE, char * linking, int op) {
   NodDegree *G = adjacency_tab(f_in, rename_tab, nb_nodes);
 
   unsigned prefix_size;
-unsigned *l; 
+  unsigned *l;
+  FILE *f_out = NULL;
 
-switch(op){
-    case 1:
-    l = densest_core_order(G, nb_nodes, &prefix_size);
+  switch(op){
+  case 1:
+    if(out != NULL){
+      f_out = fopen(out, "w");
+    }
+    l = densest_core_order(G, nb_nodes, &prefix_size, f_out);
+    if(out != NULL){
+      fclose(f_out);
+    }
     printf("Printing\n");
     printf("linking vaut %s\n", linking);
-    /*
+    
     if(linking != NULL){
-        print_authors(linking,l,prefix_size,page_tab);
-  }
-  */
-        free(l);
-        break;
-    case 3:
-  calculate_density_second_algo(G, nb_nodes, 2);
-        break;
-    case 5:
+      print_authors(linking,l,prefix_size,page_tab);
+    }
+
+    
+    free(l);
+    break;
+  case 3:
+    calculate_density_second_algo(G, nb_nodes, 2);
+    break;
+  case 5:
         
     
     printf("Computing densest triangle graph\n");
-densest_triangle_subgraph(G, nb_nodes, 2);
-        break;
-    default:
-        printf("Unspecified operation\n");
-        break;
-}
+    densest_triangle_subgraph(G, nb_nodes, 2);
+    break;
+  default:
+    printf("Unspecified operation\n");
+    break;
+  }
   fclose(f_in);
 }
   
 
 int main(int argc, char *argv[]) {
   clock_t start = clock();
-    if(argc < 3){
-        printf("./tme5 sourcefile operation (linkingfile:optional)\n");
-        printf("Operations: 1 for k-core decomposition, 3 for densest subgraph, 5 for triangle densest subgraph\n");
-        return 0;
-    }
-  do_it_all(argv[1], argv[3], atoi(argv[2]));
+  if(argc < 3){
+    printf("./tme5 sourcefile operation (linkingfile:optional)\n");
+    printf("Operations: 1 for k-core decomposition, 3 for densest subgraph, 5 for triangle densest subgraph\n");
+    return 0;
+  }
+  do_it_all(argv[1], argv[3], atoi(argv[2]), argv[4]);
 
   return 0;
 }

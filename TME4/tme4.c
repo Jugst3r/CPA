@@ -216,7 +216,7 @@ void label_propagation(adjlist G, unsigned int nb_nodes){
 void write_labels_to_file(FILE *f, adjlist G, unsigned int n){
   unsigned i = 0;
 
-
+  
   for(i=0;i<n;i++){
     fprintf(f, "%u %u\n", G[i]->ident, G[i]->label);
   }
@@ -247,7 +247,7 @@ int main(int argc, char *argv[]) {
 
   label_propagation(G, nb_nodes);
   //number of community is number of differents labels
-  //write_labels_to_file(f_out, G, nb_nodes);
+  write_labels_to_file(f_out, G, nb_nodes);
   
     
   //print_matrix(m, nb_nodes);
@@ -258,7 +258,7 @@ int main(int argc, char *argv[]) {
   //printf("%d",a);
   //printf("%d",b);
   fclose(f_in);
-  //fclose(f_out);
+  fclose(f_out);
   return 0;
 }
 
