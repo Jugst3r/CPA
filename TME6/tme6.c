@@ -385,6 +385,7 @@ void calculate_density_second_algo(NodDegree *G, unsigned n, unsigned t){
   mkscore(G, n, t);
 
   qsort(G, n, sizeof(NodDegree), cmpfunc);
+  printf("Highest density score is %g\n", G[0]->score);
 
   for(i=0; i<n; i++)
     presency_tab[i] = 0;
@@ -528,7 +529,6 @@ void do_it_all(char * ENTREE, char * linking, int op, char *out) {
   FILE * f_in;
   char line[SIZE_OF_LINE];
 
-  printf("Demarreage\n");
   if ((f_in = fopen(ENTREE, "r")) == NULL) {
     fprintf(stderr, "\nErreur: Impossible de lire le fichier %s\n", ENTREE);
     return;
@@ -590,6 +590,7 @@ void do_it_all(char * ENTREE, char * linking, int op, char *out) {
     }
     l = densest_core_order(G, nb_nodes, &prefix_size, f_out);
     if(out != NULL){
+
       fclose(f_out);
     }
     printf("Printing\n");
@@ -603,13 +604,13 @@ void do_it_all(char * ENTREE, char * linking, int op, char *out) {
     free(l);
     break;
   case 3:
-    calculate_density_second_algo(G, nb_nodes, 2);
+    calculate_density_second_algo(G, nb_nodes, 100);
     break;
   case 5:
         
     
     printf("Computing densest triangle graph\n");
-    densest_triangle_subgraph(G, nb_nodes, 2);
+    densest_triangle_subgraph(G, nb_nodes, 100);
     break;
   default:
     printf("Unspecified operation\n");
@@ -626,7 +627,14 @@ int main(int argc, char *argv[]) {
     printf("Operations: 1 for k-core decomposition, 3 for densest subgraph, 5 for triangle densest subgraph\n");
     return 0;
   }
-  do_it_all(argv[1], argv[3], atoi(argv[2]), argv[4]);
+  char *out;
+  if(argc <= 3){
+    out = NULL;
+  }
+  else{
+    out = argv[4];;
+  }
+  do_it_all(argv[1], argv[3], atoi(argv[2]), out);
 
   return 0;
 }
