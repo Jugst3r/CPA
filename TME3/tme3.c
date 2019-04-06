@@ -96,7 +96,9 @@ void free_matrix(int *m){
 
 Element **adjacency_list(FILE *f, int *rename_tab, unsigned int nb_nodes){
 
+    printf("hello\n");
   Element **nodes = (Element **)malloc(sizeof(Element*)*nb_nodes);
+      printf("hello2\n");
   unsigned int i, j;
   char line[SIZE_OF_LINE];
   for(i=0; i < nb_nodes; i++){
@@ -104,7 +106,6 @@ Element **adjacency_list(FILE *f, int *rename_tab, unsigned int nb_nodes){
   }
   
   fseek(f, 0, SEEK_SET);
-
   while (fgets(line, SIZE_OF_LINE, f) != NULL) {
     IGNORE_COMMENTS
       sscanf(line, "%u %u", & i, & j);
@@ -114,6 +115,7 @@ Element **adjacency_list(FILE *f, int *rename_tab, unsigned int nb_nodes){
     nodes[j] = add(i, nodes[j]);
   }
 
+      printf("hello3\n");
   return nodes;
 }
 
@@ -136,7 +138,7 @@ void free_adjacency_list(Element **lst, int nb_nodes){
     while(node){
       Element *tmp = node->suivant;
       free(node);
-      node = node->suivant;
+      node = tmp;
     }
   }
   free(lst);
@@ -328,6 +330,7 @@ unsigned int nbr_compo(adjlist G, unsigned int *s, unsigned int nb_nodes){
     distances[i] = 0;
   }
 
+
   while(nb_nodes_visited< nb_nodes){
     connex_size = 0;
     unsigned int u;
@@ -339,7 +342,9 @@ unsigned int nbr_compo(adjlist G, unsigned int *s, unsigned int nb_nodes){
     connex_size++;
     nb_nodes_visited++;
     add_to_fifo(F, *s);
+      
     marquage[*s] = 1;
+      
     i=0;
     while(!is_empty(F)){
       u = pop(F);
@@ -361,7 +366,6 @@ unsigned int nbr_compo(adjlist G, unsigned int *s, unsigned int nb_nodes){
       //h[cpt] = cpt2;
     }
   }
-  printf("%u",max_connex_size);
   return max_connex_size;
   
 }
@@ -668,7 +672,7 @@ void *menu(char * ENTREE, int op) {
 
   Element **lst;
   adjarray *arr;
-  unsigned int first_nod;;
+  unsigned int first_nod=0;
   unsigned *m;
   unsigned int d;
 	
@@ -687,8 +691,8 @@ void *menu(char * ENTREE, int op) {
     lst = adjacency_list(f_in, rename_tab, nb_nodes);   
     end = clock();
     elapsed_time = (end-start)/(double)CLOCKS_PER_SEC;
-    free_adjacency_list(lst, nb_nodes);
     printf("%s took %f time processing adjacency list\n", ENTREE, elapsed_time);
+    free_adjacency_list(lst, nb_nodes);
     break;
     //testing adjacency array
   case 2:
